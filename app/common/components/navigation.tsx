@@ -11,6 +11,17 @@ import {
   navigationMenuTriggerStyle,
 } from "./ui/navigation-menu";
 import { Button } from "./ui/button";
+import {
+  DropdownMenuTrigger,
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuGroup,
+} from "./ui/dropdown-menu";
+import { Avatar, AvatarFallback } from "./ui/avatar";
+import { AvatarImage } from "@radix-ui/react-avatar";
+import { BarChart3, BellIcon, LogOut, MessageCircleIcon, Settings, UserIcon } from "lucide-react";
 
 const menus = [
   {
@@ -118,7 +129,15 @@ const menus = [
   },
 ];
 
-const Navigation = ({ isSignedIn = false }: { isSignedIn?: boolean }) => {
+const Navigation = ({
+  isSignedIn,
+  hasNotifications,
+  hasMessages,
+}: {
+  isSignedIn: boolean;
+  hasNotifications: boolean;
+  hasMessages: boolean;
+}) => {
   return (
     <nav
       className={cn(
@@ -137,54 +156,106 @@ const Navigation = ({ isSignedIn = false }: { isSignedIn?: boolean }) => {
             {menus.map((menu) => (
               <NavigationMenuItem key={menu.name}>
                 {menu.items ? (
-                  <>
-                    <NavigationMenuTrigger>{menu.name}</NavigationMenuTrigger>
+                  <div>
+                    <Link to={menu.to}>
+                      <NavigationMenuTrigger>{menu.name}</NavigationMenuTrigger>
+                    </Link>
                     <NavigationMenuContent>
-                      <ul className="grid grid-cols-2 gap-4 p-4 w-[500px] bg-popover">
+                      <ul className="grid grid-cols-2 gap-4 p-2 w-[500px]">
                         {menu.items?.map((item) => (
-                          <li key={item.name}>
-                            <NavigationMenuLink asChild>
-                              <Link to={item.to} className="block p-3 hover:bg-accent rounded-md">
-                                <div className="text-sm font-medium">{item.name}</div>
-                                <p className="text-sm text-muted-foreground mt-1">
-                                  {item.description}
-                                </p>
-                              </Link>
-                            </NavigationMenuLink>
-                          </li>
+                          <NavigationMenuLink key={item.name} className="row-span-3" asChild>
+                            <Link to={item.to} className="block p-3 hover:bg-accent rounded-md">
+                              <div className="text-sm font-medium">{item.name}</div>
+                              <p className="text-sm text-muted-foreground mt-1">
+                                {item.description}
+                              </p>
+                            </Link>
+                          </NavigationMenuLink>
                         ))}
                       </ul>
                     </NavigationMenuContent>
-                  </>
+                  </div>
                 ) : (
-                  <NavigationMenuLink asChild>
-                    <Link to={menu.to} className={navigationMenuTriggerStyle()}>
-                      {menu.name}
-                    </Link>
-                  </NavigationMenuLink>
+                  <Link to={menu.to} className={navigationMenuTriggerStyle()}>
+                    {menu.name}
+                  </Link>
                 )}
               </NavigationMenuItem>
             ))}
           </NavigationMenuList>
         </NavigationMenu>
       </>
-
-      <div className="flex items-center gap-4">
-        {isSignedIn ? (
-          <Button variant="link" asChild>
-            <Link to="/dashboard">대시보드</Link>
+      {isSignedIn ? (
+        <div className="flex items-center gap-2">
+          <Button variant="ghost" size="icon" className="relative">
+            <Link to="/my/notifications">
+              <BellIcon />
+              {hasNotifications && (
+                <span className="absolute top-0 right-0 w-2 h-2 bg-red-500 rounded-full" />
+              )}
+            </Link>
           </Button>
-        ) : (
-          <>
-            <Button variant="link" asChild>
-              <Link to="/login">로그인</Link>
-            </Button>
-            <Button className="btn-primary" asChild>
-              <Link to="/signup">회원가입</Link>
-            </Button>
-          </>
-        )}
-      </div>
+          <Button variant="ghost" size="icon" className="relative">
+            <Link to="/my/messages">
+              <MessageCircleIcon />
+              {hasMessages && (
+                <span className="absolute top-0 right-0 w-2 h-2 bg-red-500 rounded-full" />
+              )}
+            </Link>
+          </Button>
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Avatar>
+                <AvatarImage src="https://github.com/shadcasdasdn.png" />
+                <AvatarFallback>N</AvatarFallback>
+              </Avatar>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent className="flex flex-col w-64 gap-2">
+              <DropdownMenuLabel className="flex flex-col">
+                <span className="font-medium">John Doe</span>
+                <span className="text-xs text-muted-foreground">john.doe@example.com</span>
+              </DropdownMenuLabel>
+              <Separator />
+              <DropdownMenuGroup className="flex flex-col gap-2">
+                <DropdownMenuItem asChild>
+                  <Link to="/my/dashboard">
+                    <BarChart3 />
+                    Dashboard
+                  </Link>
+                </DropdownMenuItem>
+                <DropdownMenuItem asChild>
+                  <Link to="/my/profile">
+                    <UserIcon />
+                    Profile
+                  </Link>
+                </DropdownMenuItem>
+                <DropdownMenuItem asChild>
+                  <Link to="/my/settings">
+                    <Settings />
+                    Settings
+                  </Link>
+                </DropdownMenuItem>
+              </DropdownMenuGroup>
+              <Separator />
+              <DropdownMenuItem asChild>
+                <Link to="/sign-out">
+                  <LogOut />
+                  Sign Out
+                </Link>
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
+        </div>
+      ) : (
+        <div className="flex items-center gap-4">
+          <Button variant="outline">
+            <Link to="/login">Login</Link>
+          </Button>
+          <Button variant="default">
+            <Link to="/signup">Signup</Link>
+          </Button>
+        </div>
+      )}
     </nav>
   );
 };
