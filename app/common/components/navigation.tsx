@@ -21,7 +21,17 @@ import {
 } from "./ui/dropdown-menu";
 import { Avatar, AvatarFallback } from "./ui/avatar";
 import { AvatarImage } from "@radix-ui/react-avatar";
-import { BarChart3, BellIcon, LogOut, MessageCircleIcon, Settings, UserIcon } from "lucide-react";
+import {
+  BarChart3,
+  BellIcon,
+  LogOut,
+  MessageCircleIcon,
+  Moon,
+  Settings,
+  UserIcon,
+  Sun,
+} from "lucide-react";
+import { useState } from "react";
 
 const menus = [
   {
@@ -138,6 +148,13 @@ const Navigation = ({
   hasNotifications: boolean;
   hasMessages: boolean;
 }) => {
+  const [isDarkMode, setIsDarkMode] = useState(false);
+
+  const toggleDarkMode = () => {
+    setIsDarkMode(!isDarkMode);
+    document.documentElement.classList.toggle("dark", !isDarkMode);
+  };
+
   return (
     <nav
       className={cn(
@@ -187,6 +204,9 @@ const Navigation = ({
       </>
       {isSignedIn ? (
         <div className="flex items-center gap-2">
+          <Button variant="ghost" size="icon" onClick={toggleDarkMode}>
+            {isDarkMode ? <Sun /> : <Moon />}
+          </Button>
           <Button variant="ghost" size="icon" className="relative">
             <Link to="/my/notifications">
               <BellIcon />
