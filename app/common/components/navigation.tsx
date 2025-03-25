@@ -158,30 +158,32 @@ const Navigation = ({
   return (
     <nav
       className={cn(
-        "flex items-center justify-between px-20 h-16 border-b backdrop-blur",
-        "fixed top-0 left-0 right-0 z-50 bg-background/50"
+        "flex items-center justify-between px-20 h-16 ",
+        "fixed top-0 left-0 right-0 z-50 bg-background/50 backdrop-blur-sm"
       )}
     >
       <div>
-        <Link to="/" className="text-2xl font-bold">
+        <Link to="/" className="text-2xl font-bold text-foreground">
           wemake
         </Link>
       </div>
       <>
         <NavigationMenu>
-          <NavigationMenuList className="gap-4">
+          <NavigationMenuList className="gap-4 text-foreground">
             {menus.map((menu) => (
               <NavigationMenuItem key={menu.name}>
                 {menu.items ? (
                   <div>
                     <Link to={menu.to}>
-                      <NavigationMenuTrigger>{menu.name}</NavigationMenuTrigger>
+                      <NavigationMenuTrigger className="cursor-pointer">
+                        {menu.name}
+                      </NavigationMenuTrigger>
                     </Link>
                     <NavigationMenuContent>
                       <ul className="grid grid-cols-2 gap-4 p-2 w-[500px]">
                         {menu.items?.map((item) => (
                           <NavigationMenuLink key={item.name} className="row-span-3" asChild>
-                            <Link to={item.to} className="block p-3 hover:bg-accent rounded-md">
+                            <Link to={item.to} className="block p-3 rounded-md">
                               <div className="text-sm font-medium">{item.name}</div>
                               <p className="text-sm text-muted-foreground mt-1">
                                 {item.description}
@@ -202,80 +204,82 @@ const Navigation = ({
           </NavigationMenuList>
         </NavigationMenu>
       </>
-      {isSignedIn ? (
-        <div className="flex items-center gap-2">
-          <Button variant="ghost" size="icon" onClick={toggleDarkMode}>
-            {isDarkMode ? <Sun /> : <Moon />}
-          </Button>
-          <Button variant="ghost" size="icon" className="relative">
-            <Link to="/my/notifications">
-              <BellIcon />
-              {hasNotifications && (
-                <span className="absolute top-0 right-0 w-2 h-2 bg-red-500 rounded-full" />
-              )}
-            </Link>
-          </Button>
-          <Button variant="ghost" size="icon" className="relative">
-            <Link to="/my/messages">
-              <MessageCircleIcon />
-              {hasMessages && (
-                <span className="absolute top-0 right-0 w-2 h-2 bg-red-500 rounded-full" />
-              )}
-            </Link>
-          </Button>
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Avatar>
-                <AvatarImage src="https://github.com/shadcasdasdn.png" />
-                <AvatarFallback>N</AvatarFallback>
-              </Avatar>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent className="flex flex-col w-64 gap-2">
-              <DropdownMenuLabel className="flex flex-col">
-                <span className="font-medium">John Doe</span>
-                <span className="text-xs text-muted-foreground">john.doe@example.com</span>
-              </DropdownMenuLabel>
-              <Separator />
-              <DropdownMenuGroup className="flex flex-col gap-2">
+      <div className="flex items-center gap-2">
+        <Button className="cursor-pointer" variant="ghost" size="icon" onClick={toggleDarkMode}>
+          {isDarkMode ? <Sun /> : <Moon />}
+        </Button>
+        {!isSignedIn ? (
+          <div className="flex items-center gap-2">
+            <Button variant="ghost" size="icon" className="relative">
+              <Link to="/my/notifications">
+                <BellIcon />
+                {hasNotifications && (
+                  <span className="absolute top-0 right-0 w-2 h-2 bg-red-500 rounded-full" />
+                )}
+              </Link>
+            </Button>
+            <Button variant="ghost" size="icon" className="relative">
+              <Link to="/my/messages">
+                <MessageCircleIcon />
+                {hasMessages && (
+                  <span className="absolute top-0 right-0 w-2 h-2 bg-red-500 rounded-full" />
+                )}
+              </Link>
+            </Button>
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Avatar>
+                  <AvatarImage src="https://github.com/shadcasdasdn.png" />
+                  <AvatarFallback>N</AvatarFallback>
+                </Avatar>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent className="flex flex-col w-64 gap-2">
+                <DropdownMenuLabel className="flex flex-col">
+                  <span className="font-medium">John Doe</span>
+                  <span className="text-xs text-muted-foreground">john.doe@example.com</span>
+                </DropdownMenuLabel>
+                <Separator />
+                <DropdownMenuGroup className="flex flex-col gap-2">
+                  <DropdownMenuItem asChild>
+                    <Link to="/my/dashboard">
+                      <BarChart3 />
+                      Dashboard
+                    </Link>
+                  </DropdownMenuItem>
+                  <DropdownMenuItem asChild>
+                    <Link to="/my/profile">
+                      <UserIcon />
+                      Profile
+                    </Link>
+                  </DropdownMenuItem>
+                  <DropdownMenuItem asChild>
+                    <Link to="/my/settings">
+                      <Settings />
+                      Settings
+                    </Link>
+                  </DropdownMenuItem>
+                </DropdownMenuGroup>
+                <Separator />
                 <DropdownMenuItem asChild>
-                  <Link to="/my/dashboard">
-                    <BarChart3 />
-                    Dashboard
+                  <Link to="/sign-out">
+                    <LogOut />
+                    Sign Out
                   </Link>
                 </DropdownMenuItem>
-                <DropdownMenuItem asChild>
-                  <Link to="/my/profile">
-                    <UserIcon />
-                    Profile
-                  </Link>
-                </DropdownMenuItem>
-                <DropdownMenuItem asChild>
-                  <Link to="/my/settings">
-                    <Settings />
-                    Settings
-                  </Link>
-                </DropdownMenuItem>
-              </DropdownMenuGroup>
-              <Separator />
-              <DropdownMenuItem asChild>
-                <Link to="/sign-out">
-                  <LogOut />
-                  Sign Out
-                </Link>
-              </DropdownMenuItem>
-            </DropdownMenuContent>
-          </DropdownMenu>
-        </div>
-      ) : (
-        <div className="flex items-center gap-4">
-          <Button variant="outline">
-            <Link to="/login">Login</Link>
-          </Button>
-          <Button variant="default">
-            <Link to="/signup">Signup</Link>
-          </Button>
-        </div>
-      )}
+              </DropdownMenuContent>
+            </DropdownMenu>
+          </div>
+        ) : (
+          <div className="flex items-center gap-4">
+            <Button className="cursor-pointer" variant="outline" asChild>
+              <Link to="/sig-in">Sign In</Link>
+            </Button>
+            <Button className="cursor-pointer" variant="default" asChild>
+              <Link to="/sign-up">Sign Up</Link>
+            </Button>
+          </div>
+        )}
+      </div>
     </nav>
   );
 };

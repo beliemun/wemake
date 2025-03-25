@@ -28,7 +28,7 @@ export function ProductCard({
 }: ProductCardProps) {
   return (
     <Link to={link}>
-      <Card className="flex flex-row justify-between items-start">
+      <Card className="flex flex-row justify-between items-start hover:bg-accent transition-colors">
         <CardHeader className="flex-1">
           <CardTitle>{productName}</CardTitle>
           <CardDescription>{productDescription}</CardDescription>
@@ -44,9 +44,12 @@ export function ProductCard({
           </div>
         </CardHeader>
         <CardFooter>
-          <Button variant="outline" className="flex flex-col items-center justify-center h-14">
-            <ChevronUp className="w-4 h-4" />
-            <span className="text-sm text-muted-foreground">{votesCount}</span>
+          <Button
+            variant="outline"
+            className="flex flex-col items-center justify-center cursor-default h-14"
+          >
+            <ChevronUp className="w-4 h-4 text-foreground" />
+            <span className="text-sm text-foreground">{votesCount}</span>
           </Button>
         </CardFooter>
       </Card>

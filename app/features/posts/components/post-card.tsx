@@ -32,7 +32,7 @@ export function PostCard({ title, description, author, date, postId }: PostCardP
           </div>
         </CardHeader>
         <CardFooter className="flex justify-end">
-          <Button variant="link" asChild className="p-0">
+          <Button asChild>
             <Link to={`/community/${postId}`}>View post &rarr;</Link>
           </Button>
         </CardFooter>
