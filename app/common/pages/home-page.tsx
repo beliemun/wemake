@@ -1,4 +1,4 @@
-import { Link, type LoaderFunction, type MetaFunction } from "react-router";
+import { Link, type MetaFunction } from "react-router";
 import { Button } from "../components/ui/button";
 import { Separator } from "../components/ui/separator";
 import { ProductCard } from "~/features/products";
@@ -16,10 +16,9 @@ import {
 } from "../components/ui/card";
 import { Badge } from "../components/ui/badge";
 import { Avatar, AvatarFallback, AvatarImage } from "../components/ui/avatar";
-import type { ComponentProps } from "react";
 import type { Route } from "./+types/home-page";
 
-export const loader: LoaderFunction = async () => {
+export const loader = async () => {
   return {
     hello: "world",
   };

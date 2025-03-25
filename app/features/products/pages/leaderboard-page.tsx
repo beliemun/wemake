@@ -1,4 +1,4 @@
-import type { Route } from "../+types/route.types";
+import type { Route } from "./+types/leaderboard-page";
 
 export function loader({ request }: Route.LoaderArgs) {
   return {

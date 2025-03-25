@@ -1,7 +1,7 @@
-import type { Route } from "../+types/route.types";
+import type { Route } from "../../+types/route.types";
 
 export interface LoaderData {
-  year: string;
+  // Add loader data properties here when needed
 }
 
 export interface ActionData {

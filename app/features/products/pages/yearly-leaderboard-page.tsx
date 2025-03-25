@@ -1,15 +1,8 @@
-import type { Route } from "../+types/route.types";
-import type { ComponentProps } from "./types";
+import type { Route } from "./+types/yearly-leaderboard-page";
 
-export function loader({ request, params = {} }: Route.LoaderArgs) {
+export function loader({ request, params }: Route.LoaderArgs) {
   return {
     year: params.year,
-  };
-}
-
-export function action({ request }: Route.ActionArgs) {
-  return {
-    // Add action data here
   };
 }
 
@@ -20,7 +13,7 @@ export function meta() {
   ];
 }
 
-export default function YearlyLeaderboardPage({ loaderData, actionData }: ComponentProps) {
+export default function YearlyLeaderboardPage({ loaderData }: Route.ComponentProps) {
   return (
     <main className="container mx-auto px-4 py-8">
       <h1 className="text-4xl font-bold mb-8">Yearly Leaderboard {loaderData.year}</h1>

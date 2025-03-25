@@ -1,7 +1,6 @@
-import type { Route } from "../+types/route.types";
-import type { ComponentProps } from "./types";
+import type { Route } from "./+types/monthly-leaderboard-page";
 
-export function loader({ request, params = {} }: Route.LoaderArgs) {
+export function loader({ request, params }: Route.LoaderArgs) {
   return {
     year: params.year,
     month: params.month,
@@ -21,7 +20,7 @@ export function meta() {
   ];
 }
 
-export default function MonthlyLeaderboardPage({ loaderData, actionData }: ComponentProps) {
+export default function MonthlyLeaderboardPage({ loaderData }: Route.ComponentProps) {
   return (
     <main className="container mx-auto px-4 py-8">
       <h1 className="text-4xl font-bold mb-8">
