@@ -36,7 +36,7 @@ export default function HomePage({ loaderData }: Route.ComponentProps) {
           <h2 className="text-foreground text-3xl font-bold leading-tight tracking-tight">
             Today's Products
           </h2>
-          <p className="font-light text-foreground">The best products for our comunty today.</p>
+          <p className="font-light text-foreground">The best products for our community today.</p>
           <Button variant="secondary" asChild>
             <Link to={"/products/leaders-boards"}>View all products &rarr;</Link>
           </Button>

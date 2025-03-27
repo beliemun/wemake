@@ -44,10 +44,14 @@ export function Layout({ children }: { children: React.ReactNode }) {
 
 export default function App() {
   return (
-    <section className="py-28 px-12 min-h-screen">
-      <Navigation isSignedIn={true} hasNotifications={true} hasMessages={true} />
-      <Outlet />
-    </section>
+    <main className="pt-16">
+      <div>
+        <Navigation isSignedIn={true} hasNotifications={true} hasMessages={true} />
+      </div>
+      <div className="flex min-h-[calc(100vh-64px)] px-20 py-10">
+        <Outlet />
+      </div>
+    </main>
   );
 }
 

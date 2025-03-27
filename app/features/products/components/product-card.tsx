@@ -8,6 +8,7 @@ import {
 } from "~/common/components/ui/card";
 import { Button } from "~/common/components/ui/button";
 import { MessageCircle, EyeIcon, ChevronUp } from "lucide-react";
+import { cn } from "~/lib/utils";
 
 interface ProductCardProps {
   link: string;
@@ -28,7 +29,12 @@ export function ProductCard({
 }: ProductCardProps) {
   return (
     <Link to={link}>
-      <Card className="flex flex-row justify-between items-start hover:bg-accent transition-colors">
+      <Card
+        className={cn(
+          "flex flex-row justify-between items-start rounded-lg hover:bg-accent transition-colors",
+          "border border-foreground/10"
+        )}
+      >
         <CardHeader className="flex-1">
           <CardTitle>{productName}</CardTitle>
           <CardDescription>{productDescription}</CardDescription>
