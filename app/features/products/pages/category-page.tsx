@@ -2,10 +2,6 @@ import { Hero } from "~/common/components/hero";
 import type { Route } from "./+types/category-page";
 import ProductPagination from "~/common/components/product-pagination";
 import { ProductCard } from "../components";
-import { Form } from "react-router";
-import { Button } from "~/common/components/ui/button";
-import { Input } from "~/common/components/ui/input";
-
 export const meta: Route.MetaFunction = () => [
   { title: "Developer Tools | ProductHunt Clone" },
   { name: "description", content: "Tools for developers building with Wemake." },
