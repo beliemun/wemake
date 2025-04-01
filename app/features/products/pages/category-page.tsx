@@ -1,26 +1,34 @@
+import { Hero } from "~/common/components/hero";
 import type { Route } from "./+types/category-page";
+import ProductPagination from "~/common/components/product-pagination";
+import { ProductCard } from "../components";
+import { Form } from "react-router";
+import { Button } from "~/common/components/ui/button";
+import { Input } from "~/common/components/ui/input";
 
-export function loader({ request, params }: Route.LoaderArgs) {
-  return {
-    category: params.category,
-  };
-}
+export const meta: Route.MetaFunction = () => [
+  { title: "Developer Tools | ProductHunt Clone" },
+  { name: "description", content: "Tools for developers building with Wemake." },
+];
 
-export function action({ request }: Route.ActionArgs) {
-  return {
-    // Add action data here
-  };
-}
-
-export function meta() {
-  return [{ title: "Category | Wemake" }, { name: "description", content: "Products by category" }];
-}
-
-export default function CategoryPage({ loaderData }: Route.ComponentProps) {
+export default function CategoryPage() {
   return (
-    <main className="container mx-auto px-4 py-8">
-      <h1 className="text-4xl font-bold mb-8">Category: {loaderData.category}</h1>
-      {/* Add content here */}
+    <main className="px-4 py-8 space-y-8">
+      <Hero title="Developer Tools" description="Tools for developers building with Wemake." />
+      <div className="grid grid-cols-1 gap-4">
+        {Array.from({ length: 10 }).map((_, index) => (
+          <ProductCard
+            key={index}
+            link="/products/productId"
+            productName="Product Name"
+            productDescription="Product Description"
+            commentsCount={100}
+            viewsCount={100}
+            votesCount={100}
+          />
+        ))}
+      </div>
+      <ProductPagination totalPages={10} />
     </main>
   );
 }
