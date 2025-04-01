@@ -11,6 +11,18 @@ export const paramsSchema = z.object({
   year: z.coerce.number(),
 });
 
+// data는 loader에서 반환한 데이터
+export const meta: Route.MetaFunction = ({ params, data }) => {
+  const date = DateTime.fromObject({
+    year: Number(params.year),
+  });
+  return [
+    {
+      title: `연간 최고 상품, ${date.toLocaleString({ year: "numeric" })} | Wemake`,
+    },
+  ];
+};
+
 export const loader = ({ params }: Route.LoaderArgs) => {
   const { success, data: parsedData } = paramsSchema.safeParse(params);
   if (!success) {

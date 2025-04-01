@@ -12,6 +12,19 @@ export const paramsSchema = z.object({
   week: z.coerce.number(),
 });
 
+// data는 loader에서 반환한 데이터
+export const meta: Route.MetaFunction = ({ params, data }) => {
+  const date = DateTime.fromObject({
+    weekYear: data.year,
+    weekNumber: data.week,
+  });
+  return [
+    {
+      title: `주간 최고 상품, ${date.toLocaleString(DateTime.DATE_MED)} | Wemake`,
+    },
+  ];
+};
+
 export const loader = ({ params }: Route.LoaderArgs) => {
   const { success, data: parsedData } = paramsSchema.safeParse(params);
   if (!success) {
