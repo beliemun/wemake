@@ -10,6 +10,7 @@ import {
 import type { Route } from "./+types/root";
 import "./app.css";
 import Navigation from "./common/components/navigation";
+import { Settings } from "luxon";
 
 export const links: Route.LinksFunction = () => [
   { rel: "preconnect", href: "https://fonts.googleapis.com" },
@@ -25,6 +26,8 @@ export const links: Route.LinksFunction = () => [
 ];
 
 export function Layout({ children }: { children: React.ReactNode }) {
+  Settings.defaultLocale = "ko";
+  Settings.defaultZone = "Asia/Seoul";
   return (
     <html lang="en" suppressHydrationWarning className="dark">
       <head>
@@ -48,8 +51,10 @@ export default function App() {
       <div>
         <Navigation isSignedIn={true} hasNotifications={true} hasMessages={true} />
       </div>
-      <div className="flex min-h-[calc(100vh-64px)] px-20 py-10">
-        <Outlet />
+      <div className="flex justify-center">
+        <div className="max-w-[1280px] w-full min-h-[calc(100vh-64px)] px-20 py-10">
+          <Outlet />
+        </div>
       </div>
     </main>
   );
