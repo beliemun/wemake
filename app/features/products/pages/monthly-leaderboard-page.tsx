@@ -91,7 +91,7 @@ export default function MonthlyLeaderboardPage({ loaderData }: Route.ComponentPr
         {Array.from({ length: 10 }).map((_, index) => (
           <ProductCard
             key={index}
-            link="/products/productId"
+            link={`/products/productId-${index}`}
             productName="Product Name"
             productDescription="Product Description"
             commentsCount={100}

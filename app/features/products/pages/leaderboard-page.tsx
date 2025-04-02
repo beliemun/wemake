@@ -30,7 +30,7 @@ export default function LeaderboardPage({ loaderData }: Route.ComponentProps) {
         {Array.from({ length: 10 }).map((_, index) => (
           <ProductCard
             key={index}
-            link="/products/productId"
+            link={`/products/productId-${index}`}
             productName="Product Name"
             productDescription="Product Description"
             commentsCount={100}
@@ -53,7 +53,7 @@ export default function LeaderboardPage({ loaderData }: Route.ComponentProps) {
         {Array.from({ length: 10 }).map((_, index) => (
           <ProductCard
             key={index}
-            link="/products/productId"
+            link={`/products/productId-${index}`}
             productName="Product Name"
             productDescription="Product Description"
             commentsCount={100}
@@ -78,7 +78,7 @@ export default function LeaderboardPage({ loaderData }: Route.ComponentProps) {
         {Array.from({ length: 10 }).map((_, index) => (
           <ProductCard
             key={index}
-            link="/products/productId"
+            link={`/products/productId-${index}`}
             productName="Product Name"
             productDescription="Product Description"
             commentsCount={100}
@@ -101,7 +101,7 @@ export default function LeaderboardPage({ loaderData }: Route.ComponentProps) {
         {Array.from({ length: 10 }).map((_, index) => (
           <ProductCard
             key={index}
-            link="/products/productId"
+            link={`/products/productId-${index}`}
             productName="Product Name"
             productDescription="Product Description"
             commentsCount={100}
