@@ -16,7 +16,7 @@ export default function InputPair({
   ...rest
 }: InputPairProps) {
   return (
-    <div className="flex flex-col items-start gap-2">
+    <div className="flex flex-col items-start gap-2 text-foreground">
       <Label htmlFor={id} className="flex flex-col items-start">
         {label}
         <small className="text-muted-foreground">{description}</small>

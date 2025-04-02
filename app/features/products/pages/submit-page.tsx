@@ -1,17 +1,11 @@
 import { Hero } from "~/common/components/hero";
 import type { Route } from "./+types/submit-page";
 import { Form } from "react-router";
-import { Input } from "~/common/components/ui/input";
-import { Label } from "~/common/components/ui/label";
 import InputPair from "~/common/components/input-pair";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "~/common/components/ui/select";
+
 import SelectPair from "~/common/components/select-pair";
+import FilePair from "~/common/components/file-pair";
+import { Button } from "~/common/components/ui/button";
 export const meta: Route.MetaFunction = () => {
   return [
     { title: "Submit Product | Wemake" },
@@ -63,6 +57,10 @@ export default function SubmitPage({ loaderData }: Route.ComponentProps) {
             ]}
           />
         </div>
+        <div className="flex flex-col gap-6 p-6">
+          <FilePair name="file" label="File" description="This is file of your product." />
+        </div>
+        <Button type="submit">Upload</Button>
       </Form>
     </main>
   );
