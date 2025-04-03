@@ -29,7 +29,7 @@ export function CreateReviewDialog() {
         <div>
           <Label>Rating</Label>
           <small>How would you rate this product?</small>
-          <div className="grid grid-cols-5 gap-4">
+          <div className="flex flex-row">
             {[1, 2, 3, 4, 5].map((star) => (
               <label
                 key={star}
