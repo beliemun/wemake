@@ -1,6 +1,7 @@
-import { Hero } from "~/common/components/hero";
+import { Button } from "~/common/components/ui/button";
+import { CreateReviewDialog, ReviewCard } from "../components";
 import type { Route } from "./+types/product-reviews-page";
-import { ReviewCard } from "../components";
+import { Dialog, DialogTrigger } from "~/common/components/ui/dialog";
 
 export function loader({ params }: Route.LoaderArgs) {
   return {
@@ -17,20 +18,29 @@ export function meta() {
 
 export default function ProductReviewsPage({ params: { productId } }: Route.ComponentProps) {
   return (
-    <main className="flex flex-col px-4 py-8 gap-8">
-      <div className="grid grid-cols-1 gap-8">
-        {Array.from({ length: 5 }).map((_, index) => (
-          <ReviewCard
-            key={index}
-            username="John Doe"
-            userHandle="username"
-            userAvatar="https://github.com/shadcn.png"
-            userInitial="JD"
-            rating={4}
-            content="Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, quos. Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, quos. Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, quos."
-          />
-        ))}
+    <Dialog>
+      <div className="max-w-screen-md">
+        <div className="flex flex-row justify-between">
+          <h2 className="text-foreground font-bold">10 Reviews</h2>
+          <DialogTrigger asChild>
+            <Button variant="secondary">Write a review</Button>
+          </DialogTrigger>
+        </div>
+        <div className="flex flex-col gap-4">
+          {Array.from({ length: 5 }).map((_, index) => (
+            <ReviewCard
+              key={index}
+              username="John Doe"
+              userHandle="username"
+              userAvatar="https://github.com/shadcn.png"
+              userInitial="JD"
+              rating={4}
+              content="Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, quos. Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, quos. Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, quos."
+            />
+          ))}
+        </div>
       </div>
-    </main>
+      <CreateReviewDialog />
+    </Dialog>
   );
 }
