@@ -272,10 +272,10 @@ const Navigation = ({
         ) : (
           <div className="flex items-center gap-4">
             <Button className="cursor-pointer" variant="outline" asChild>
-              <Link to="/sig-in">Sign In</Link>
+              <Link to="/auth/sign-in">Sign In</Link>
             </Button>
             <Button className="cursor-pointer" variant="default" asChild>
-              <Link to="/sign-up">Sign Up</Link>
+              <Link to="/auth/sign-up">Sign Up</Link>
             </Button>
           </div>
         )}

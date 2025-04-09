@@ -5,12 +5,14 @@ import {
   Outlet,
   Scripts,
   ScrollRestoration,
+  useLocation,
 } from "react-router";
 
 import type { Route } from "./+types/root";
 import "./app.css";
 import Navigation from "./common/components/navigation";
 import { Settings } from "luxon";
+import { cn } from "./lib/utils";
 
 export const links: Route.LinksFunction = () => [
   { rel: "preconnect", href: "https://fonts.googleapis.com" },
@@ -46,13 +48,21 @@ export function Layout({ children }: { children: React.ReactNode }) {
 }
 
 export default function App() {
+  const { pathname } = useLocation();
   return (
-    <main className="pt-16">
+    <main className={pathname.includes("/auth") ? "" : "pt-16"}>
       <div>
-        <Navigation isSignedIn={true} hasNotifications={true} hasMessages={true} />
+        {pathname.includes("/auth") ? null : (
+          <Navigation isSignedIn={true} hasNotifications={true} hasMessages={true} />
+        )}
       </div>
       <div className="flex justify-center">
-        <div className="max-w-[1280px] w-full min-h-[calc(100vh-64px)] px-20 py-10">
+        <div
+          className={cn(
+            "max-w-[1280px] w-full min-h-[calc(100vh-64px)]",
+            pathname.includes("/auth") ? "" : "px-20 py-10"
+          )}
+        >
           <Outlet />
         </div>
       </div>
