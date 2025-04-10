@@ -1,7 +1,7 @@
 import { Hero } from "~/common/components/hero";
 import type { Route } from "./+types/community-page";
 import { Button } from "~/common/components/ui/button";
-import { Form, Link, useSearchParams } from "react-router";
+import { Form, Link, useSearchParams, useNavigate } from "react-router";
 import {
   DropdownMenu,
   DropdownMenuTrigger,
@@ -18,6 +18,7 @@ export const meta: Route.MetaFunction = () => [
 ];
 
 export default function CommunityPage() {
+  const navigate = useNavigate();
   const [searchParams, setSearchParams] = useSearchParams();
   const sorting = searchParams.get("sorting") || "newest";
   const period = searchParams.get("period") || "all";
@@ -81,7 +82,9 @@ export default function CommunityPage() {
                 <Input className="w-fit" name="search" placeholder="검색어를 입력해주세요." />
               </Form>
             </div>
-            <Button>게시글 작성</Button>
+            <Button className="cursor-pointer" onClick={() => navigate("/community/submit")}>
+              게시글 작성
+            </Button>
           </div>
           <div className="flex flex-col gap-4">
             {Array.from({ length: 10 }).map((_, index) => (

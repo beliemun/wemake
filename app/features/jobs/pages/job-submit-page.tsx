@@ -1,4 +1,3 @@
-import type { ComponentProps, MetaFunction } from "./+types/job-submit-page";
 import { Button } from "~/common/components/ui/button";
 import { Textarea } from "~/common/components/ui/textarea";
 import { ArrowLeft } from "lucide-react";
@@ -6,14 +5,15 @@ import { Link } from "react-router";
 import InputPair from "~/common/components/input-pair";
 import SelectPair from "~/common/components/select-pair";
 import { LOCATION_RANGES, SALARY_RANGES } from "../constants";
-export const meta: MetaFunction = () => {
+import type { Route } from "./+types/job-page";
+export const meta: Route.MetaFunction = () => {
   return [
     { title: "구인 등록 | Wemake" },
     { name: "description", content: "새로운 구인 공고를 등록하세요." },
   ];
 };
 
-export default function JobSubmitPage({ loaderData, actionData }: ComponentProps) {
+export default function JobSubmitPage() {
   return (
     <div>
       <div className="mb-8">

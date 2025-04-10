@@ -6,16 +6,6 @@ import { PostCard } from "~/features/posts";
 import { IdeaCard } from "~/features/ideas";
 import { JobCard } from "~/features/jobs";
 import { TeamCard } from "~/features/teams";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from "../components/ui/card";
-import { Badge } from "../components/ui/badge";
-import { Avatar, AvatarFallback, AvatarImage } from "../components/ui/avatar";
 import type { Route } from "./+types/home-page";
 
 export const loader = async () => {
