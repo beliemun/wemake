@@ -5,8 +5,9 @@ import { ProductCard } from "~/features/products";
 import { PostCard } from "~/features/posts";
 import { IdeaCard } from "~/features/ideas";
 import { JobCard } from "~/features/jobs";
-import { TeamCard } from "~/features/teams";
+
 import type { Route } from "./+types/home-page";
+import { TeamCard } from "~/features/teams";
 
 export const loader = async () => {
   return {
