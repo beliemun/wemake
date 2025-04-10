@@ -1,6 +1,9 @@
 import { Form, Link } from "react-router";
 import { Button } from "~/common/components/ui/button";
 import InputPair from "~/common/components/input-pair";
+import { Separator } from "~/common/components/ui/separator";
+import { RiKakaoTalkFill, RiGithubFill } from "react-icons/ri";
+import { IoLockClosed } from "react-icons/io5";
 
 export default function SignInPage() {
   return (
@@ -9,10 +12,10 @@ export default function SignInPage() {
         <Button variant="secondary" asChild>
           <Link to="/auth/sign-up">회원가입</Link>
         </Button>
-        <h1 className="text-3xl font-bold">로그인</h1>
+        <h1 className="text-3xl font-bold text-foreground">로그인</h1>
         <p className="text-gray-500 dark:text-gray-400">계정에 로그인하여 서비스를 이용하세요</p>
       </div>
-      <Form method="post" className="space-y-10">
+      <Form method="post" className="space-y-6">
         <InputPair
           id="email"
           name="email"
@@ -33,6 +36,26 @@ export default function SignInPage() {
         />
         <Button className="w-full" type="submit">
           로그인
+        </Button>
+        <Separator />
+
+        <Button className="w-full" variant="secondary" asChild>
+          <Link to="/auth/social/kakao/start">
+            <RiKakaoTalkFill fill="currentColor" />
+            카카오 로그인
+          </Link>
+        </Button>
+        <Button className="w-full" variant="secondary" asChild>
+          <Link to="/auth/social/github/start">
+            <RiGithubFill fill="currentColor" />
+            깃허브 로그인
+          </Link>
+        </Button>
+        <Button className="w-full" variant="secondary" asChild>
+          <Link to="/auth/otp/start">
+            <IoLockClosed fill="currentColor" />
+            로그인
+          </Link>
         </Button>
       </Form>
     </div>

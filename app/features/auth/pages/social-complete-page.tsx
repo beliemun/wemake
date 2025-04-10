@@ -6,7 +6,7 @@ export default function SocialCompletePage() {
   return (
     <div className="space-y-6">
       <div className="space-y-2 text-center">
-        <h1 className="text-3xl font-bold">{provider} 로그인 완료</h1>
+        <h1 className="text-3xl font-bold text-foreground">{provider} 로그인 완료</h1>
         <p className="text-gray-500 dark:text-gray-400">
           {provider} 계정으로 로그인이 완료되었습니다
         </p>

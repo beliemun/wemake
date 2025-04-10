@@ -1,7 +1,9 @@
+import { ChevronUp } from "lucide-react";
 import { Link } from "react-router";
 import { Avatar, AvatarFallback, AvatarImage } from "~/common/components/ui/avatar";
 import { Button } from "~/common/components/ui/button";
 import { Card, CardHeader, CardTitle, CardFooter } from "~/common/components/ui/card";
+import { cn } from "~/lib/utils";
 
 interface PostCardProps {
   title: string;
@@ -9,9 +11,19 @@ interface PostCardProps {
   author: string;
   date: string;
   postId: string;
+  expanded?: boolean;
+  votesCount?: number;
 }
 
-export function PostCard({ title, description, author, date, postId }: PostCardProps) {
+export function PostCard({
+  title,
+  description,
+  author,
+  date,
+  postId,
+  expanded = false,
+  votesCount = 0,
+}: PostCardProps) {
   return (
     <Card>
       <CardHeader className="flex flex-row gap-2">
@@ -29,9 +41,16 @@ export function PostCard({ title, description, author, date, postId }: PostCardP
         </div>
       </CardHeader>
       <CardFooter className="flex justify-end">
-        <Button asChild>
-          <Link to={`/community/${postId}`}>View post &rarr;</Link>
-        </Button>
+        {expanded ? (
+          <Button variant="outline" className="flex justify-end">
+            <ChevronUp className="w-4 h-4 text-foreground" />
+            <span className="text-sm text-foreground">{votesCount}</span>
+          </Button>
+        ) : (
+          <Button asChild>
+            <Link to={`/community/${postId}`}>View post &rarr;</Link>
+          </Button>
+        )}
       </CardFooter>
     </Card>
   );
