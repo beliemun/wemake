@@ -125,7 +125,6 @@ export default function HomePage({ loaderData }: Route.ComponentProps) {
             <Link to={"/teams"}>Explore all teams &rarr;</Link>
           </Button>
         </div>
-
         {Array.from({ length: 10 }).map((_, index) => (
           <TeamCard
             key={index}
