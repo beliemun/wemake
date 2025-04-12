@@ -208,7 +208,7 @@ const Navigation = ({
         <Button className="cursor-pointer" variant="ghost" size="icon" onClick={toggleDarkMode}>
           {isDarkMode ? <Sun /> : <Moon />}
         </Button>
-        {!isSignedIn ? (
+        {isSignedIn ? (
           <div className="flex items-center gap-2">
             <Button variant="ghost" size="icon" className="relative">
               <Link to="/my/notifications">
@@ -228,7 +228,7 @@ const Navigation = ({
             </Button>
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
-                <Avatar>
+                <Avatar className="cursor-pointer">
                   <AvatarImage src="https://github.com/shadcasdasdn.png" />
                   <AvatarFallback>N</AvatarFallback>
                 </Avatar>
@@ -240,19 +240,19 @@ const Navigation = ({
                 </DropdownMenuLabel>
                 <Separator />
                 <DropdownMenuGroup className="flex flex-col gap-2">
-                  <DropdownMenuItem asChild>
+                  <DropdownMenuItem className="cursor-pointer" asChild>
                     <Link to="/my/dashboard">
                       <BarChart3 />
                       Dashboard
                     </Link>
                   </DropdownMenuItem>
-                  <DropdownMenuItem asChild>
+                  <DropdownMenuItem className="cursor-pointer" asChild>
                     <Link to="/my/profile">
                       <UserIcon />
                       Profile
                     </Link>
                   </DropdownMenuItem>
-                  <DropdownMenuItem asChild>
+                  <DropdownMenuItem className="cursor-pointer" asChild>
                     <Link to="/my/settings">
                       <Settings />
                       Settings
@@ -260,7 +260,7 @@ const Navigation = ({
                   </DropdownMenuItem>
                 </DropdownMenuGroup>
                 <Separator />
-                <DropdownMenuItem asChild>
+                <DropdownMenuItem className="cursor-pointer" asChild>
                   <Link to="/sign-out">
                     <LogOut />
                     Sign Out
