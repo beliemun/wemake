@@ -37,10 +37,10 @@ export default function ProductOverviewLayout({ params: { productId } }: Route.C
           </div>
         </div>
         <div className="flex flex-row gap-4">
-          <Button variant="secondary" size="lg">
+          <Button className="cursor-pointer" variant="secondary" size="lg">
             Visit Website
           </Button>
-          <Button size="lg">
+          <Button className="cursor-pointer" size="lg">
             <ChevronUp className="size-4" />
             Upvote (100)
           </Button>

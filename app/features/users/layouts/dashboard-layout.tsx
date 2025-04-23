@@ -60,7 +60,9 @@ export default function DashboardLayout() {
           </SidebarGroup>
         </SidebarContent>
       </Sidebar>
-      <Outlet />
+      <div className="size-full">
+        <Outlet />
+      </div>
     </SidebarProvider>
   );
 }
