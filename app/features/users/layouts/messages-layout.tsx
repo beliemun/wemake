@@ -10,7 +10,7 @@ import { MessageItem } from "../components/message-item";
 
 export default function MessagesLayout() {
   return (
-    <SidebarProvider className="max-h-[calc(100vh-64px)] overflow-hidden h-full min-h-full">
+    <SidebarProvider>
       <Sidebar className="pt-16" variant="floating">
         <SidebarContent>
           <SidebarGroup>
@@ -28,9 +28,7 @@ export default function MessagesLayout() {
           </SidebarGroup>
         </SidebarContent>
       </Sidebar>
-      <div className="h-full w-full">
-        <Outlet />
-      </div>
+      <Outlet />
     </SidebarProvider>
   );
 }
