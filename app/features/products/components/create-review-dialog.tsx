@@ -61,7 +61,9 @@ export function CreateReviewDialog() {
           required
         />
         <DialogFooter>
-          <Button variant="secondary">Submit</Button>
+          <Button variant="secondary" className="cursor-pointer">
+            Submit
+          </Button>
         </DialogFooter>
       </Form>
     </DialogContent>

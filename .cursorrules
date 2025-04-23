@@ -45,4 +45,5 @@ Key Conventions
 - `meta` returns MetaFunction type.
 - `json` does not exists anymore. Return plain objects i.e `export function loader({ request }: Route.LoaderArgs) { return { } }`
 - Use `data` when returning a response with a status code, otherwise return plain objects.
-- 항상 한국어로 답변해줘.
+- 항상 한국어로 답변해.
+- 페이지나 레이아웃을 만들 때는 반드시 export default function으로 만들어. export function 으로 페이지를 생성하지마.

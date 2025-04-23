@@ -23,7 +23,9 @@ export default function ProductReviewsPage({ params: { productId } }: Route.Comp
         <div className="flex flex-row justify-between">
           <h2 className="text-foreground font-bold">10 Reviews</h2>
           <DialogTrigger asChild>
-            <Button variant="secondary">Write a review</Button>
+            <Button variant="secondary" className="cursor-pointer">
+              Write a review
+            </Button>
           </DialogTrigger>
         </div>
         <div className="flex flex-col gap-4">

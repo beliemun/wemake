@@ -41,17 +41,17 @@ export default function SettingsPage() {
               ]}
             />
             <InputPair
-              id="bio"
-              label="소개"
-              description="소개를 입력하세요."
-              placeholder="소개를 입력하세요."
+              id="headline"
+              label="한줄 소개"
+              description="한줄 소개를 입력하세요."
+              placeholder="한줄 소개를 입력하세요."
               required
             />
             <InputPair
               id="bio"
-              label="소개"
-              description="소개를 입력하세요."
-              placeholder="소개를 입력하세요."
+              label="자기 소개"
+              description="자기 소개를 입력하세요."
+              placeholder="자기 소개를 입력하세요."
               required
             />
             <Button type="submit" className="w-fit">
