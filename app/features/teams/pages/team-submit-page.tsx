@@ -1,8 +1,9 @@
 import { Form } from "react-router";
 import { Hero } from "~/common/components/hero";
 import InputPair from "~/common/components/input-pair";
+import SelectPair from "~/common/components/select-pair";
 import { Button } from "~/common/components/ui/button";
-
+import { PRODUCT_STAGE } from "../constants";
 export const meta = () => {
   return [{ title: "팀 등록 | WeMake" }, { description: "새로운 팀을 등록하세요." }];
 };
@@ -38,6 +39,13 @@ export default function TeamSubmitPage() {
             label="팀원에게 무엇을 보상할 생각이신가요?"
             name="tags"
             description="팀원에게 보상할 생각을 입력해주세요."
+          />
+          <SelectPair
+            label="제품 단계"
+            name="stage"
+            description="제품 단계를 선택해주세요."
+            placeholder="제품 단계를 선택해주세요."
+            options={PRODUCT_STAGE}
           />
         </div>
         <Button type="submit" className="self-end w-fit">
