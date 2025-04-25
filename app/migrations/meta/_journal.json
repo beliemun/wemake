@@ -15,6 +15,27 @@
       "when": 1745478687362,
       "tag": "0001_wealthy_havok",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1745481123587,
+      "tag": "0002_numerous_gauntlet",
+      "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "7",
+      "when": 1745544246385,
+      "tag": "0003_far_venus",
+      "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "7",
+      "when": 1745545106843,
+      "tag": "0004_dear_roxanne_simpson",
+      "breakpoints": true
     }
   ]
 }
