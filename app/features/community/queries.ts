@@ -17,7 +17,6 @@ import client from "~/supabase-client";
 
 export const getTopics = async () => {
   const { data, error } = await client.from("topics").select("name, slug");
-  console.log(data, error);
   if (error) {
     // 여기서 Throw 된 에러는 Error Boundary 에서 잡히게 된다.
     throw new Error(error.message);
@@ -50,24 +49,8 @@ export const getPosts = async () => {
   // 괄호'()'를 활용하면 해당 테이블 중 원하는 컬럼만 가져올 수 있다.
   // supabase 에서는 기본적으로 left join 을 사용한다. 따라서 조인되지 않은 데이터는 null 로 표시된다.
   // inner join 을 사용하려면 컬럼명 다음에 !inner 를 붙이면 된다.
-  const { data, error } = await client.from("posts").select(`
-    post_id,
-    title,
-    content,
-    created_at,
-    topic:topics!inner (
-      name
-    ),
-    author:profiles!posts_profile_id_profiles_profile_id_fk!inner (
-      name,
-      avatar,
-      username
-    ),
-    upvotes:post_upvotes (
-      count
-    )
-  `);
-  console.log(error);
+  const { data, error } = await client.from("community_post_list_view").select("*");
+
   if (error) {
     throw new Error(error.message);
   }
