@@ -102,7 +102,7 @@ export default function CommunityPage({ loaderData }: Route.ComponentProps) {
                 content={post.content}
                 author={post.author.name}
                 date={post.created_at}
-                votesCount={12}
+                votesCount={post.upvotes[0].count}
                 avatar={post.author.avatar}
                 expanded={true}
               />
