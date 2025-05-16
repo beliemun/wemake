@@ -74,6 +74,9 @@ export default [
         route("/:messageId", "features/users/pages/message-page.tsx"),
       ]),
     ]),
+    route("/notifications", "features/users/pages/notifications-page.tsx"),
+    route("/profile", "features/users/pages/my-profile-page.tsx"),
+    route("/settings", "features/users/pages/settings-page.tsx"),
   ]),
   ...prefix("/users", [
     layout("features/users/layouts/profile-layout.tsx", [

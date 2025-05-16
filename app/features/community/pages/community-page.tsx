@@ -12,12 +12,19 @@ import { ChevronDown } from "lucide-react";
 import { SORT_OPTIONS, PERIOD_OPTIONS } from "../constants";
 import { Input } from "~/common/components/ui/input";
 import { PostCard } from "~/features/posts/components/post-card";
+import { getPosts, getTopics } from "../queries";
 export const meta: Route.MetaFunction = () => [
   { title: "커뮤니티 | WeMake" },
   { name: "description", content: "WeMake 커뮤니티에서 다양한 이야기를 나눠보세요." },
 ];
 
-export default function CommunityPage() {
+export const loader = async () => {
+  const topics = await getTopics();
+  const posts = await getPosts();
+  return { topics, posts };
+};
+
+export default function CommunityPage({ loaderData }: Route.ComponentProps) {
   const navigate = useNavigate();
   const [searchParams, setSearchParams] = useSearchParams();
   const sorting = searchParams.get("sorting") || "newest";
@@ -87,14 +94,16 @@ export default function CommunityPage() {
             </Button>
           </div>
           <div className="flex flex-col gap-4">
-            {Array.from({ length: 10 }).map((_, index) => (
+            {loaderData.posts.map((post, index) => (
               <PostCard
+                postId={post.post_id}
                 key={index}
-                title="Discussion Title"
-                description="Productivity"
-                author="Brian"
-                date="12 hours ago"
-                postId="postId"
+                title={post.title}
+                content={post.content}
+                author={post.author.name}
+                date={post.created_at}
+                votesCount={12}
+                avatar={post.author.avatar}
                 expanded={true}
               />
             ))}
@@ -103,15 +112,9 @@ export default function CommunityPage() {
         <div className="sticky top-16">
           <p className="text-sm text-muted-foreground mb-4">Topics</p>
           <div className="flex flex-col gap-2 items-start">
-            {[
-              "AI Tools",
-              "Design Tools",
-              "Development Tools",
-              "Note Taking Apps",
-              "Productivity",
-            ].map((topic, index) => (
+            {loaderData.topics.map((topic, index) => (
               <Button asChild key={index} variant="ghost">
-                <Link to={`/community?topic=${topic}`}>{topic}</Link>
+                <Link to={`/community?topic=${topic.slug}`}>{topic.name}</Link>
               </Button>
             ))}
           </div>
