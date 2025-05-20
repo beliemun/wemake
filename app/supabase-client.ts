@@ -20,6 +20,10 @@ type Database = MergeDeep<
   }
 >;
 
-const client = createClient<Database>(process.env.SUPABASE_URL!, process.env.SUPABASE_ANON_KEY!);
+// const client = createClient<Database>(process.env.SUPABASE_URL!, process.env.SUPABASE_ANON_KEY!);
+const client = createClient<Database>(
+  "https://wgcwcmnzbhbfwwuujdpd.supabase.co",
+  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6IndnY3djbW56YmhiZnd3dXVqZHBkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDU1NjgyMTYsImV4cCI6MjA2MTE0NDIxNn0.aCYbGkj9Y1jdCY5JmO4JsVExwJQXkzh_0Urnqk4K2c8"
+);
 
 export default client;
