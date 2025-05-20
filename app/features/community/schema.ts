@@ -20,6 +20,7 @@ export const posts = pgTable("posts", {
   post_id: bigint("post_id", { mode: "number" }).primaryKey().generatedByDefaultAsIdentity(),
   title: text("title").notNull(),
   content: text("content").notNull(),
+  upvotes: bigint({ mode: "number" }).default(0),
   created_at: timestamp("created_at").notNull().defaultNow(),
   updated_at: timestamp("updated_at").notNull().defaultNow(),
   topic_id: bigint("topic_id", { mode: "number" }).references(() => topics.topic_id, {

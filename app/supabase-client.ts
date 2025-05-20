@@ -2,6 +2,7 @@ import { createClient } from "@supabase/supabase-js";
 import type { MergeDeep, SetNonNullable, SetFieldType } from "type-fest";
 import type { Database as SupabaseDatabase } from "database.types";
 
+// Supabase 에서 Typescript Codegen 할 때 불필요한 null 값을 제거하기 위해 type-fest 의 MergeDeep 사용
 type Database = MergeDeep<
   SupabaseDatabase,
   {

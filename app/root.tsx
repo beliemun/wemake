@@ -6,6 +6,7 @@ import {
   Scripts,
   ScrollRestoration,
   useLocation,
+  useNavigation,
 } from "react-router";
 
 import type { Route } from "./+types/root";
@@ -49,8 +50,16 @@ export function Layout({ children }: { children: React.ReactNode }) {
 
 export default function App() {
   const { pathname } = useLocation();
+  const navigation = useNavigation();
+  const isLoading = navigation.state === "loading";
+
   return (
-    <main className={pathname.includes("/auth") ? "" : "pt-16"}>
+    <main
+      className={cn({
+        "pt-16": !pathname.includes("/auth"),
+        "transition-opacity animate-pulse": isLoading,
+      })}
+    >
       <div>
         {pathname.includes("/auth") ? null : (
           <Navigation isSignedIn={true} hasNotifications={true} hasMessages={true} />

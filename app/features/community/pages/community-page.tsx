@@ -1,7 +1,7 @@
 import { Hero } from "~/common/components/hero";
 import type { Route } from "./+types/community-page";
 import { Button } from "~/common/components/ui/button";
-import { Form, Link, useSearchParams, useNavigate } from "react-router";
+import { Form, Link, useSearchParams, useNavigate, useLoaderData, Await } from "react-router";
 import {
   DropdownMenu,
   DropdownMenuTrigger,
@@ -13,22 +13,28 @@ import { SORT_OPTIONS, PERIOD_OPTIONS } from "../constants";
 import { Input } from "~/common/components/ui/input";
 import { PostCard } from "~/features/posts/components/post-card";
 import { getPosts, getTopics } from "../queries";
+import { Suspense } from "react";
 export const meta: Route.MetaFunction = () => [
   { title: "커뮤니티 | WeMake" },
   { name: "description", content: "WeMake 커뮤니티에서 다양한 이야기를 나눠보세요." },
 ];
 
 export const loader = async () => {
-  const topics = await getTopics();
-  const posts = await getPosts();
+  // await new Promise((resolve) => setTimeout(resolve, 3000));
+  // const topics = await getTopics();
+  // const posts = await getPosts();
+  // const [topics, posts] = await Promise.all([getTopics(), getPosts()]);
+  const topics = getTopics();
+  const posts = getPosts();
   return { topics, posts };
 };
 
 export default function CommunityPage({ loaderData }: Route.ComponentProps) {
-  const navigate = useNavigate();
+  const { topics, posts } = loaderData;
   const [searchParams, setSearchParams] = useSearchParams();
   const sorting = searchParams.get("sorting") || "newest";
   const period = searchParams.get("period") || "all";
+  const navigate = useNavigate();
 
   return (
     <div className="flex flex-col gap-8">
@@ -93,31 +99,43 @@ export default function CommunityPage({ loaderData }: Route.ComponentProps) {
               게시글 작성
             </Button>
           </div>
-          <div className="flex flex-col gap-4">
-            {loaderData.posts.map((post, index) => (
-              <PostCard
-                postId={post.post_id}
-                key={index}
-                title={post.title}
-                content={post.content}
-                author={post.author}
-                date={post.created_at}
-                votesCount={post.upvotes}
-                avatar={post.author_avatar}
-                expanded={true}
-              />
-            ))}
-          </div>
+          <Suspense fallback={<div>Loading...</div>}>
+            <Await resolve={posts}>
+              {(data) => (
+                <div className="flex flex-col gap-4">
+                  {data.map((post, index) => (
+                    <PostCard
+                      postId={post.post_id}
+                      key={index}
+                      title={post.title}
+                      content={post.content}
+                      author={post.author}
+                      date={post.created_at}
+                      votesCount={post.upvotes}
+                      avatar={post.author_avatar}
+                      expanded={true}
+                    />
+                  ))}
+                </div>
+              )}
+            </Await>
+          </Suspense>
         </div>
         <div className="sticky top-16">
           <p className="text-sm text-muted-foreground mb-4">Topics</p>
-          <div className="flex flex-col gap-2 items-start">
-            {loaderData.topics.map((topic, index) => (
-              <Button asChild key={index} variant="ghost">
-                <Link to={`/community?topic=${topic.slug}`}>{topic.name}</Link>
-              </Button>
-            ))}
-          </div>
+          <Suspense fallback={<div>Loading...</div>}>
+            <Await resolve={topics}>
+              {(data) => (
+                <div className="flex flex-col gap-2 items-start">
+                  {data.map((topic, index) => (
+                    <Button asChild key={index} variant="ghost">
+                      <Link to={`/community?topic=${topic.slug}`}>{topic.name}</Link>
+                    </Button>
+                  ))}
+                </div>
+              )}
+            </Await>
+          </Suspense>
         </div>
       </div>
     </div>

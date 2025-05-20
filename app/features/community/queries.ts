@@ -16,6 +16,7 @@ import client from "~/supabase-client";
 // };
 
 export const getTopics = async () => {
+  await new Promise((resolve) => setTimeout(resolve, 3000));
   const { data, error } = await client.from("topics").select("name, slug");
   if (error) {
     // 여기서 Throw 된 에러는 Error Boundary 에서 잡히게 된다.

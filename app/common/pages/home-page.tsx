@@ -59,10 +59,11 @@ export default function HomePage({ loaderData }: Route.ComponentProps) {
           <PostCard
             key={index}
             title="Discussion Title"
-            description="Productivity"
+            content="Discussion Content"
             author="Brian"
             date="12 hours ago"
-            postId="postId"
+            postId={index}
+            avatar="https://github.com/shadcn.png"
           />
         ))}
       </section>
@@ -122,7 +123,9 @@ export default function HomePage({ loaderData }: Route.ComponentProps) {
           </h2>
           <p className="font-light text-foreground">Join a team looking for a new member.</p>
           <Button variant="link" asChild>
-            <Link to={"/teams"}>Explore all teams &rarr;</Link>
+            <Link to={"/teams"} prefetch="viewport">
+              Explore all teams &rarr;
+            </Link>
           </Button>
         </div>
         {Array.from({ length: 10 }).map((_, index) => (

@@ -174,7 +174,7 @@ const Navigation = ({
               <NavigationMenuItem key={menu.name}>
                 {menu.items ? (
                   <div>
-                    <Link to={menu.to}>
+                    <Link to={menu.to} prefetch="intent">
                       <NavigationMenuTrigger className="cursor-pointer">
                         {menu.name}
                       </NavigationMenuTrigger>
