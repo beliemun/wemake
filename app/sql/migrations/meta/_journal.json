@@ -15,6 +15,13 @@
       "when": 1747379564809,
       "tag": "0001_gray_stone_men",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1747717175109,
+      "tag": "0002_fluffy_colleen_wing",
+      "breakpoints": true
     }
   ]
 }

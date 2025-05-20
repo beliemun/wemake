@@ -8,11 +8,16 @@ import { JobCard } from "~/features/jobs";
 
 import type { Route } from "./+types/home-page";
 import { TeamCard } from "~/features/teams";
+import { getProductsByDateRange } from "~/features/products/queries";
+import { DateTime } from "luxon";
 
 export const loader = async () => {
-  return {
-    hello: "world",
-  };
+  const products = await getProductsByDateRange({
+    startDate: DateTime.now().startOf("day"),
+    endDate: DateTime.now().endOf("day"),
+    limit: 7,
+  });
+  return { products };
 };
 
 export const meta: MetaFunction = () => {
@@ -32,15 +37,15 @@ export default function HomePage({ loaderData }: Route.ComponentProps) {
             <Link to={"/products/leaders-boards"}>View all products &rarr;</Link>
           </Button>
         </div>
-        {Array.from({ length: 10 }).map((_, index) => (
+        {loaderData.products.map((product, index) => (
           <ProductCard
-            key={index}
-            link={`/products/productId-${index}`}
-            productName="Product Name"
-            productDescription="Product Description"
-            commentsCount={100}
-            viewsCount={100}
-            votesCount={100}
+            key={product.product_id}
+            link={`/products/productId-${product.product_id}`}
+            productName={product.name}
+            productDescription={product.description}
+            commentsCount={product.reviews}
+            viewsCount={product.views}
+            votesCount={product.upvotes}
           />
         ))}
       </section>

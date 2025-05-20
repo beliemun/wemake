@@ -4,10 +4,38 @@ import { ProductCard } from "../components";
 import { Button } from "~/common/components/ui/button";
 import { Link } from "react-router";
 import { Separator } from "~/common/components/ui/separator";
+import { getProductsByDateRange } from "../queries";
+import { DateTime } from "luxon";
 
-export function loader({ request }: Route.LoaderArgs) {
-  return {};
-}
+export const loader = async () => {
+  const dailyProductsPromise = getProductsByDateRange({
+    startDate: DateTime.now().startOf("day"),
+    endDate: DateTime.now().endOf("day"),
+    limit: 7,
+  });
+  const weeklyProductsPromise = getProductsByDateRange({
+    startDate: DateTime.now().startOf("week"),
+    endDate: DateTime.now().endOf("week"),
+    limit: 7,
+  });
+  const monthlyProductsPromise = getProductsByDateRange({
+    startDate: DateTime.now().startOf("month"),
+    endDate: DateTime.now().endOf("month"),
+    limit: 7,
+  });
+  const yearlyProductsPromise = getProductsByDateRange({
+    startDate: DateTime.now().startOf("year"),
+    endDate: DateTime.now().endOf("year"),
+    limit: 7,
+  });
+  const [dailyProducts, weeklyProducts, monthlyProducts, yearlyProducts] = await Promise.all([
+    dailyProductsPromise,
+    weeklyProductsPromise,
+    monthlyProductsPromise,
+    yearlyProductsPromise,
+  ]);
+  return { dailyProducts, weeklyProducts, monthlyProducts, yearlyProducts };
+};
 
 export function meta() {
   return [
@@ -27,15 +55,15 @@ export default function LeaderboardPage({ loaderData }: Route.ComponentProps) {
           </h2>
           <p className="font-light text-foreground">The best products for our comunty today.</p>
         </div>
-        {Array.from({ length: 10 }).map((_, index) => (
+        {loaderData.dailyProducts.map((product) => (
           <ProductCard
-            key={index}
-            link={`/products/productId-${index}`}
-            productName="Product Name"
-            productDescription="Product Description"
-            commentsCount={100}
-            viewsCount={100}
-            votesCount={100}
+            key={product.product_id}
+            link={`/products/productId-${product.product_id}`}
+            productName={product.name}
+            productDescription={product.description}
+            commentsCount={product.reviews}
+            viewsCount={product.views}
+            votesCount={product.upvotes}
           />
         ))}
         <Button variant="link" asChild>
@@ -50,15 +78,15 @@ export default function LeaderboardPage({ loaderData }: Route.ComponentProps) {
           </h2>
           <p className="font-light text-foreground">The best products for our comunty this week.</p>
         </div>
-        {Array.from({ length: 10 }).map((_, index) => (
+        {loaderData.weeklyProducts.map((product) => (
           <ProductCard
-            key={index}
-            link={`/products/productId-${index}`}
-            productName="Product Name"
-            productDescription="Product Description"
-            commentsCount={100}
-            viewsCount={100}
-            votesCount={100}
+            key={product.product_id}
+            link={`/products/productId-${product.product_id}`}
+            productName={product.name}
+            productDescription={product.description}
+            commentsCount={product.reviews}
+            viewsCount={product.views}
+            votesCount={product.upvotes}
           />
         ))}
         <Button variant="link" asChild>
@@ -75,15 +103,15 @@ export default function LeaderboardPage({ loaderData }: Route.ComponentProps) {
             The best products for our comunty this month.
           </p>
         </div>
-        {Array.from({ length: 10 }).map((_, index) => (
+        {loaderData.monthlyProducts.map((product) => (
           <ProductCard
-            key={index}
-            link={`/products/productId-${index}`}
-            productName="Product Name"
-            productDescription="Product Description"
-            commentsCount={100}
-            viewsCount={100}
-            votesCount={100}
+            key={product.product_id}
+            link={`/products/productId-${product.product_id}`}
+            productName={product.name}
+            productDescription={product.description}
+            commentsCount={product.reviews}
+            viewsCount={product.views}
+            votesCount={product.upvotes}
           />
         ))}
         <Button variant="link" asChild>
@@ -98,15 +126,15 @@ export default function LeaderboardPage({ loaderData }: Route.ComponentProps) {
           </h2>
           <p className="font-light text-foreground">The best products for our comunty this year.</p>
         </div>
-        {Array.from({ length: 10 }).map((_, index) => (
+        {loaderData.yearlyProducts.map((product) => (
           <ProductCard
-            key={index}
-            link={`/products/productId-${index}`}
-            productName="Product Name"
-            productDescription="Product Description"
-            commentsCount={100}
-            viewsCount={100}
-            votesCount={100}
+            key={product.product_id}
+            link={`/products/productId-${product.product_id}`}
+            productName={product.name}
+            productDescription={product.description}
+            commentsCount={product.reviews}
+            viewsCount={product.views}
+            votesCount={product.upvotes}
           />
         ))}
         <Button variant="link" asChild>

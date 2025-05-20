@@ -14,9 +14,9 @@ interface ProductCardProps {
   link: string;
   productName: string;
   productDescription: string;
-  commentsCount: number;
-  viewsCount: number;
-  votesCount: number;
+  commentsCount: string;
+  viewsCount: string;
+  votesCount: string;
 }
 
 export function ProductCard({
