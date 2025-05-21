@@ -6,6 +6,7 @@ import { Hero } from "~/common/components/hero";
 import { ProductCard } from "../components";
 import { Button } from "~/common/components/ui/button";
 import ProductPagination from "~/common/components/product-pagination";
+import { getProductPagesByDateRange, getProductsByDateRange } from "../queries";
 
 export const paramsSchema = z.object({
   year: z.coerce.number(),
@@ -23,7 +24,7 @@ export const meta: Route.MetaFunction = ({ params, data }) => {
   ];
 };
 
-export const loader = ({ params }: Route.LoaderArgs) => {
+export const loader = async ({ params, request }: Route.LoaderArgs) => {
   const { success, data: parsedData } = paramsSchema.safeParse(params);
   if (!success) {
     throw data({
@@ -55,8 +56,22 @@ export const loader = ({ params }: Route.LoaderArgs) => {
       { status: 400 }
     );
   }
-
-  return data(parsedData);
+  const url = new URL(request.url);
+  const products = await getProductsByDateRange({
+    startDate: date.startOf("year"),
+    endDate: date.endOf("year"),
+    limit: 10,
+    page: Number(url.searchParams.get("page") ?? 1),
+  });
+  const totalPages = await getProductPagesByDateRange({
+    startDate: date.startOf("year"),
+    endDate: date.endOf("year"),
+  });
+  return {
+    ...parsedData,
+    products,
+    totalPages,
+  };
 };
 
 export default function YearlyLeaderboardPage({ loaderData }: Route.ComponentProps) {
@@ -84,19 +99,19 @@ export default function YearlyLeaderboardPage({ loaderData }: Route.ComponentPro
         ) : null}
       </div>
       <div className="grid grid-cols-1 gap-4">
-        {Array.from({ length: 10 }).map((_, index) => (
+        {loaderData.products.map((product) => (
           <ProductCard
-            key={index}
-            link={`/products/productId-${index}`}
-            productName="Product Name"
-            productDescription="Product Description"
-            commentsCount={100}
-            viewsCount={100}
-            votesCount={100}
+            key={product.product_id}
+            link={`/products/productId-${product.product_id}`}
+            productName={product.name}
+            productDescription={product.description}
+            commentsCount={product.reviews}
+            viewsCount={product.views}
+            votesCount={product.upvotes}
           />
         ))}
       </div>
-      <ProductPagination totalPages={10} />
+      <ProductPagination totalPages={loaderData.totalPages} />
     </main>
   );
 }

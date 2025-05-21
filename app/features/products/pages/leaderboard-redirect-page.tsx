@@ -1,13 +1,11 @@
 import { data, redirect } from "react-router";
-import type { Route } from "./+types/leaderboard-redirect-page";
 import { DateTime } from "luxon";
+import type { Route } from "./+types/leaderboard-page";
 export function loader({ params }: Route.LoaderArgs) {
   const { period } = params;
 
   let url: string;
   const today = DateTime.now().setZone("Asia/Seoul");
-
-  console.log("load");
 
   if (period === "daily") {
     url = `/products/leaderboards/daily/${today.year}/${today.month}/${today.day}`;

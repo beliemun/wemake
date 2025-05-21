@@ -10,18 +10,23 @@ import type { Route } from "./+types/home-page";
 import { TeamCard } from "~/features/teams";
 import { getProductsByDateRange } from "~/features/products/queries";
 import { DateTime } from "luxon";
+import { getPosts } from "~/features/community/queries";
+import { getGptIdeas } from "~/features/ideas/queries";
 
-export const loader = async () => {
+export const meta: MetaFunction = () => {
+  return [{ title: "Home | Wemake" }, { name: "Description", content: "Home page" }];
+};
+
+export const loader = async ({ request }: Route.LoaderArgs) => {
   const products = await getProductsByDateRange({
     startDate: DateTime.now().startOf("day"),
     endDate: DateTime.now().endOf("day"),
     limit: 7,
+    page: 1,
   });
-  return { products };
-};
-
-export const meta: MetaFunction = () => {
-  return [{ title: "Home | Wemake" }, { name: "Description", content: "Home page" }];
+  const posts = await getPosts({ limit: 10, sorting: "newest", period: "all" });
+  const gptIdeas = await getGptIdeas({ limit: 10 });
+  return { products, posts, gptIdeas };
 };
 
 export default function HomePage({ loaderData }: Route.ComponentProps) {
@@ -53,22 +58,22 @@ export default function HomePage({ loaderData }: Route.ComponentProps) {
       <section className="grid grid-cols-3 gap-4">
         <div className="flex flex-col items-start gap-2">
           <h2 className="text-foreground text-3xl font-bold leading-tight tracking-tight">
-            Today's Posts
+            Latest Discussions
           </h2>
           <p className="font-light text-foreground">The best posts for our community today.</p>
           <Button variant="secondary" asChild>
-            <Link to={"/community/leaders-boards"}>Explore all discussions &rarr;</Link>
+            <Link to={"/community"}>Explore all discussions &rarr;</Link>
           </Button>
         </div>
-        {Array.from({ length: 10 }).map((_, index) => (
+        {loaderData.posts.map((post, index) => (
           <PostCard
-            key={index}
-            title="Discussion Title"
-            content="Discussion Content"
-            author="Brian"
-            date="12 hours ago"
-            postId={index}
-            avatar="https://github.com/shadcn.png"
+            key={post.post_id}
+            title={post.title}
+            content={post.content}
+            author={post.author}
+            date={post.created_at}
+            postId={post.post_id}
+            avatar={post.author_avatar}
           />
         ))}
       </section>
@@ -80,18 +85,18 @@ export default function HomePage({ loaderData }: Route.ComponentProps) {
           </h2>
           <p className="font-light text-foreground">Find ideas for your next project.</p>
           <Button variant="secondary" asChild>
-            <Link to={"/idears"}>Explore all ideas &rarr;</Link>
+            <Link to={"/ideas"}>Explore all ideas &rarr;</Link>
           </Button>
         </div>
-        {Array.from({ length: 10 }).map((_, index) => (
+        {loaderData.gptIdeas.map((idea, index) => (
           <IdeaCard
-            key={index}
-            content="A startup that creates AI-powered tools for the future, using the latest in AI technology. and we are looking for a co-founder to join us. for more info, please visit our website. so if you are interested, please contact us. also, we are looking for a co-founder to join us. for more info, please visit our website. so if you are interested, please contact us."
-            viewCount={123}
-            date="12 hours ago"
-            likeCount={12}
-            ideaId="ideaId"
-            claimed={index % 2 === 0}
+            key={idea.gpt_idea_id}
+            content={idea.idea}
+            viewCount={idea.views}
+            date={DateTime.fromISO(idea.created_at).toRelative()}
+            likeCount={idea.likes}
+            ideaId={idea.gpt_idea_id.toString()}
+            claimed={idea.is_claimed}
           />
         ))}
       </section>

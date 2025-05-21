@@ -7,7 +7,7 @@ import { cn } from "~/lib/utils";
 interface IdeaCardProps {
   content: string;
   viewCount: number;
-  date: string;
+  date: string | null;
   likeCount: number;
   ideaId: string;
   claimed?: boolean;

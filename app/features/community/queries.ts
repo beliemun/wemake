@@ -1,8 +1,9 @@
 import db from "~/db";
 import { posts, postUpvotes, topics } from "./schema";
-import { count, asc, eq } from "drizzle-orm";
+import { count, asc, eq, desc } from "drizzle-orm";
 import { profiles } from "../users/schema";
 import client from "~/supabase-client";
+import { DateTime } from "luxon";
 
 // export const getTopics = async () => {
 //   const allTopics = await db
@@ -46,12 +47,55 @@ export const getTopics = async () => {
 //   return allPosts;
 // };
 
-export const getPosts = async () => {
+export const getPosts = async ({
+  limit,
+  sorting,
+  period,
+  search,
+  topic,
+}: {
+  limit: number;
+  sorting: "newest" | "popular";
+  period: "all" | "today" | "week" | "month" | "year";
+  search?: string;
+  topic?: string;
+}) => {
   // 괄호'()'를 활용하면 해당 테이블 중 원하는 컬럼만 가져올 수 있다.
   // supabase 에서는 기본적으로 left join 을 사용한다. 따라서 조인되지 않은 데이터는 null 로 표시된다.
   // inner join 을 사용하려면 컬럼명 다음에 !inner 를 붙이면 된다.
-  const { data, error } = await client.from("community_post_list_view").select("*");
+  const baseQuery = client.from("community_post_list_view").select("*").limit(limit);
+  if (sorting === "newest") {
+    baseQuery.order("created_at", { ascending: false });
+  } else if (sorting === "popular") {
+    console.log("period", period);
+    if (period === "all") {
+      baseQuery.order("upvotes", { ascending: false });
+    } else {
+      const today = DateTime.now();
+      if (period === "today") {
+        baseQuery.gte("created_at", today.startOf("day").toISO());
+      } else if (period === "week") {
+        baseQuery.gte("created_at", today.startOf("week").toISO());
+      } else if (period === "month") {
+        baseQuery.gte("created_at", today.startOf("month").toISO());
+      } else if (period === "year") {
+        baseQuery.gte("created_at", today.startOf("year").toISO());
+      }
+      baseQuery.order("upvotes", { ascending: false });
+    }
+  }
 
+  if (search) {
+    baseQuery.ilike("title", `%${search}%`);
+  }
+
+  console.log("topic", topic);
+  if (topic) {
+    baseQuery.eq("topic_slug", topic);
+  }
+
+  const { data, error, status, statusText } = await baseQuery;
+  console.log("data", data?.length, error, status, statusText);
   if (error) {
     throw new Error(error.message);
   }

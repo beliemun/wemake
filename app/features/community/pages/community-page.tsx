@@ -1,7 +1,7 @@
 import { Hero } from "~/common/components/hero";
 import type { Route } from "./+types/community-page";
 import { Button } from "~/common/components/ui/button";
-import { Form, Link, useSearchParams, useNavigate, useLoaderData, Await } from "react-router";
+import { Form, Link, useSearchParams, useNavigate, useLoaderData, Await, data } from "react-router";
 import {
   DropdownMenu,
   DropdownMenuTrigger,
@@ -14,18 +14,47 @@ import { Input } from "~/common/components/ui/input";
 import { PostCard } from "~/features/posts/components/post-card";
 import { getPosts, getTopics } from "../queries";
 import { Suspense } from "react";
+import { z } from "zod";
+
 export const meta: Route.MetaFunction = () => [
   { title: "커뮤니티 | WeMake" },
   { name: "description", content: "WeMake 커뮤니티에서 다양한 이야기를 나눠보세요." },
 ];
 
-export const loader = async () => {
-  await new Promise((resolve) => setTimeout(resolve, 2000));
+const searchParamsSchema = z.object({
+  sorting: z.enum(["newest", "popular"]).optional().default("newest"),
+  period: z.enum(["all", "today", "week", "month", "year"]).optional().default("all"),
+  search: z.string().optional(),
+  topic: z.string().optional(),
+});
+
+export const loader = async ({ request }: Route.LoaderArgs) => {
+  const url = new URL(request.url);
+  const { success, data: parsedData } = searchParamsSchema.safeParse(
+    Object.fromEntries(url.searchParams)
+  );
+  if (!success) {
+    throw data(
+      {
+        error: "Invalid search params",
+        message: "Invalid search params",
+      },
+      { status: 400 }
+    );
+  }
+
+  // await new Promise((resolve) => setTimeout(resolve, 2000));
   // const topics = await getTopics();
   // const posts = await getPosts();
   // const [topics, posts] = await Promise.all([getTopics(), getPosts()]);
   const topics = getTopics();
-  const posts = getPosts();
+  const posts = getPosts({
+    limit: 10,
+    sorting: parsedData.sorting,
+    period: parsedData.period,
+    search: parsedData.search,
+    topic: parsedData.topic,
+  });
   return { topics, posts };
 };
 

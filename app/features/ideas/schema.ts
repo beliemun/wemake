@@ -12,8 +12,8 @@ export const gptIdeas = pgTable("gpt_ideas", {
   created_at: timestamp("created_at").notNull().defaultNow(),
 });
 
-export const getIdeasLikes = pgTable(
-  "get_ideas_likes",
+export const gptIdeasLikes = pgTable(
+  "gpt_ideas_likes",
   {
     gpt_idea_id: bigint("gpt_idea_id", { mode: "number" }).references(() => gptIdeas.gpt_idea_id, {
       onDelete: "cascade",

@@ -12,21 +12,25 @@ export const loader = async () => {
     startDate: DateTime.now().startOf("day"),
     endDate: DateTime.now().endOf("day"),
     limit: 7,
+    page: 1,
   });
   const weeklyProductsPromise = getProductsByDateRange({
     startDate: DateTime.now().startOf("week"),
     endDate: DateTime.now().endOf("week"),
     limit: 7,
+    page: 1,
   });
   const monthlyProductsPromise = getProductsByDateRange({
     startDate: DateTime.now().startOf("month"),
     endDate: DateTime.now().endOf("month"),
     limit: 7,
+    page: 1,
   });
   const yearlyProductsPromise = getProductsByDateRange({
     startDate: DateTime.now().startOf("year"),
     endDate: DateTime.now().endOf("year"),
     limit: 7,
+    page: 1,
   });
   const [dailyProducts, weeklyProducts, monthlyProducts, yearlyProducts] = await Promise.all([
     dailyProductsPromise,
