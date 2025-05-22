@@ -6,7 +6,7 @@ import { Badge } from "~/common/components/ui/badge";
 interface JobCardProps {
   companyLogo: string;
   companyName: string;
-  postedDate: string;
+  postedDate: string | null;
   title: string;
   salary: string;
   location: string;

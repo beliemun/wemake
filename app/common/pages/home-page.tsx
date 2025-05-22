@@ -12,6 +12,7 @@ import { getProductsByDateRange } from "~/features/products/queries";
 import { DateTime } from "luxon";
 import { getPosts } from "~/features/community/queries";
 import { getGptIdeas } from "~/features/ideas/queries";
+import { getJobs } from "~/features/jobs/queries";
 
 export const meta: MetaFunction = () => {
   return [{ title: "Home | Wemake" }, { name: "Description", content: "Home page" }];
@@ -26,7 +27,8 @@ export const loader = async ({ request }: Route.LoaderArgs) => {
   });
   const posts = await getPosts({ limit: 10, sorting: "newest", period: "all" });
   const gptIdeas = await getGptIdeas({ limit: 10 });
-  return { products, posts, gptIdeas };
+  const jobs = await getJobs({ limit: 11 });
+  return { products, posts, gptIdeas, jobs };
 };
 
 export default function HomePage({ loaderData }: Route.ComponentProps) {
@@ -111,17 +113,17 @@ export default function HomePage({ loaderData }: Route.ComponentProps) {
             <Link to={"/jobs"}>Explore all jobs &rarr;</Link>
           </Button>
         </div>
-        {Array.from({ length: 10 }).map((_, index) => (
+        {loaderData.jobs.map((job, index) => (
           <JobCard
-            key={index}
-            companyLogo="https://github.com/facebook.png"
-            companyName="Meta"
-            postedDate="12 hours ago"
+            key={job.job_id}
+            companyLogo={job.company_logo}
+            companyName={job.company_name}
+            postedDate={DateTime.fromISO(job.created_at).toRelative()}
             badges={["Full-time", "Remote", "Senior"]}
-            title="Software Engineer"
-            salary="$100,000 - $120,000"
-            location="San Francisco, CA"
-            jobId="jobId"
+            title={job.position}
+            salary={job.salary_range}
+            location={job.location}
+            jobId={job.job_id.toString()}
           />
         ))}
       </section>
