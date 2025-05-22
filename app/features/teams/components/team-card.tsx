@@ -6,7 +6,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "~/common/components/ui/avat
 
 interface TeamCardProps {
   username: string;
-  userAvatar: string;
+  avatar: string | null;
   userInitial: string;
   position: string[];
   description: string;
@@ -15,7 +15,7 @@ interface TeamCardProps {
 
 export function TeamCard({
   username,
-  userAvatar,
+  avatar,
   userInitial,
   position,
   description,
@@ -29,7 +29,7 @@ export function TeamCard({
             <span className="text-sm">@{username}</span>
             <Avatar className="size-4">
               <AvatarFallback>{userInitial}</AvatarFallback>
-              <AvatarImage src={userAvatar} />
+              <AvatarImage src={avatar ?? undefined} />
             </Avatar>
           </Badge>
           <span className="text-sm"> is looking for</span>

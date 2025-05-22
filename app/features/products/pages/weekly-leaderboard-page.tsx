@@ -124,7 +124,6 @@ export default function WeeklyLeaderboardPage({ loaderData }: Route.ComponentPro
 
 // 가장 가까운 ErrorBoundary를 찾아서 오류 처리
 export function ErrorBoundary({ error }: Route.ErrorBoundaryProps) {
-  console.log(error);
   if (isRouteErrorResponse(error)) {
     if (error.status === 400) {
       return (

@@ -67,7 +67,6 @@ export const getPosts = async ({
   if (sorting === "newest") {
     baseQuery.order("created_at", { ascending: false });
   } else if (sorting === "popular") {
-    console.log("period", period);
     if (period === "all") {
       baseQuery.order("upvotes", { ascending: false });
     } else {
@@ -89,13 +88,11 @@ export const getPosts = async ({
     baseQuery.ilike("title", `%${search}%`);
   }
 
-  console.log("topic", topic);
   if (topic) {
     baseQuery.eq("topic_slug", topic);
   }
 
   const { data, error, status, statusText } = await baseQuery;
-  console.log("data", data?.length, error, status, statusText);
   if (error) {
     throw new Error(error.message);
   }

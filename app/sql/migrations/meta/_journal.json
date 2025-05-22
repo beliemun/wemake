@@ -29,6 +29,20 @@
       "when": 1747816323213,
       "tag": "0003_smiling_tusk",
       "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "7",
+      "when": 1747898665073,
+      "tag": "0004_huge_daredevil",
+      "breakpoints": true
+    },
+    {
+      "idx": 5,
+      "version": "7",
+      "when": 1747898834301,
+      "tag": "0005_swift_dracula",
+      "breakpoints": true
     }
   ]
 }

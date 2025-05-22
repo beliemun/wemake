@@ -13,6 +13,7 @@ import { DateTime } from "luxon";
 import { getPosts } from "~/features/community/queries";
 import { getGptIdeas } from "~/features/ideas/queries";
 import { getJobs } from "~/features/jobs/queries";
+import { getTeams } from "~/features/teams/queries";
 
 export const meta: MetaFunction = () => {
   return [{ title: "Home | Wemake" }, { name: "Description", content: "Home page" }];
@@ -28,7 +29,8 @@ export const loader = async ({ request }: Route.LoaderArgs) => {
   const posts = await getPosts({ limit: 10, sorting: "newest", period: "all" });
   const gptIdeas = await getGptIdeas({ limit: 10 });
   const jobs = await getJobs({ limit: 11 });
-  return { products, posts, gptIdeas, jobs };
+  const teams = await getTeams({ limit: 10 });
+  return { products, posts, gptIdeas, jobs, teams };
 };
 
 export default function HomePage({ loaderData }: Route.ComponentProps) {
@@ -41,7 +43,7 @@ export default function HomePage({ loaderData }: Route.ComponentProps) {
           </h2>
           <p className="font-light text-foreground">The best products for our community today.</p>
           <Button variant="secondary" asChild>
-            <Link to={"/products/leaders-boards"}>View all products &rarr;</Link>
+            <Link to={"/products/leaderboards"}>View all products &rarr;</Link>
           </Button>
         </div>
         {loaderData.products.map((product, index) => (
@@ -140,15 +142,15 @@ export default function HomePage({ loaderData }: Route.ComponentProps) {
             </Link>
           </Button>
         </div>
-        {Array.from({ length: 10 }).map((_, index) => (
+        {loaderData.teams.map((team, index) => (
           <TeamCard
-            key={index}
-            username="brian"
-            userAvatar="https://github.com/shadcn.png"
-            userInitial="B"
-            position={["React Developer", "Frontend Developer", "Backend Developer"]}
-            description="to build a new social media platform."
-            teamId="teamId"
+            key={team.team_id}
+            username={team.team_leader.username}
+            avatar={team.team_leader.avatar}
+            userInitial={team.team_leader.username[0]}
+            position={team.roles.split(",")}
+            description={team.product_description}
+            teamId={team.team_id.toString()}
           />
         ))}
       </section>

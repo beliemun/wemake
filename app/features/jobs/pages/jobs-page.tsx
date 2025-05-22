@@ -20,7 +20,6 @@ const searchParamsSchema = z.object({
 
 export const loader = async ({ request }: Route.LoaderArgs) => {
   const url = new URL(request.url);
-  console.log("url", url.searchParams);
   const { success, data: parsedData } = searchParamsSchema.safeParse(
     Object.fromEntries(url.searchParams)
   );
@@ -33,7 +32,6 @@ export const loader = async ({ request }: Route.LoaderArgs) => {
       { status: 400 }
     );
   }
-  console.log("parsedData", parsedData);
   const jobs = await getJobs({
     limit: 11,
     location: parsedData.location,

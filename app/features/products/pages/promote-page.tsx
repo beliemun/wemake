@@ -28,7 +28,6 @@ export default function PromotePage({ loaderData, actionData }: Route.ComponentP
     promoteDate?.from && promoteDate?.to
       ? DateTime.fromJSDate(promoteDate.to).diff(DateTime.fromJSDate(promoteDate.from), "days").days
       : 0;
-  console.log(totalDays);
   return (
     <main className="flex flex-col px-4 py-8 gap-8">
       <Hero title="Promote Your Product" />

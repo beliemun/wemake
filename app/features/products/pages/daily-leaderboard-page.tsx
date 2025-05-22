@@ -69,8 +69,6 @@ export const loader = async ({ params, request }: Route.LoaderArgs) => {
     page: Number(url.searchParams.get("page") ?? 1),
   });
 
-  console.log(products);
-
   const totalPages = await getProductPagesByDateRange({
     startDate: date.startOf("day"),
     endDate: date.endOf("day"),

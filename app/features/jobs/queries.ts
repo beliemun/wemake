@@ -12,8 +12,6 @@ export const getJobs = async ({
   jobType?: JobType;
   salary?: SalaryRange;
 }) => {
-  console.log("jobType", jobType);
-
   let baseQuery = client
     .from("jobs")
     .select(
@@ -46,7 +44,6 @@ export const getJobs = async ({
   }
 
   const { data, error } = await baseQuery;
-  console.log("data", data);
 
   if (error) {
     throw new Error(error.message);
