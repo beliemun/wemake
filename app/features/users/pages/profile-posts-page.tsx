@@ -20,12 +20,13 @@ export default function ProfilePostsPage() {
       <div className="grid grid-cols-1 gap-4">
         {Array.from({ length: 10 }).map((_, index) => (
           <PostCard
+            postId={index}
             key={index}
             title="포스트 제목"
-            description="포스트 내용"
+            content="포스트 내용"
             author="사용자"
             date="2024-01-01"
-            postId={index.toString()}
+            avatar="https://github.com/shadcn.png"
           />
         ))}
       </div>

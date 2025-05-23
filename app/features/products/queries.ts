@@ -5,7 +5,7 @@ import { PAGE_SIZE } from "./constants";
 interface Product {
   product_id: number;
   name: string;
-  description: string;
+  tagline: string;
   upvotes: number;
   views: number;
   reviews: number;
@@ -14,7 +14,7 @@ interface Product {
 const productListSelect = `
   product_id,
   name,
-  description,
+  tagline,
   upvotes:stats->upvotes::int,
   views:stats->views::int,
   reviews:stats->reviews::int
@@ -47,7 +47,7 @@ export const getProductsByDateRange = async ({
   const processedData = data?.map((item) => ({
     product_id: item.product_id,
     name: item.name,
-    description: item.description,
+    tagline: item.tagline,
     upvotes: Number(item.upvotes),
     views: Number(item.views),
     reviews: Number(item.reviews),
@@ -118,7 +118,7 @@ export const getProductsByCategory = async ({
     throw new Error(error.message);
   }
 
-  return data;
+  return data as Product[];
 };
 
 export const getCategoryPages = async (categoryId: number) => {
@@ -136,4 +136,73 @@ export const getCategoryPages = async (categoryId: number) => {
   }
 
   return Math.ceil(count / PAGE_SIZE);
+};
+
+export const getProductBySearch = async ({ query, page }: { query: string; page: number }) => {
+  const { data, error } = await client
+    .from("products")
+    .select(productListSelect)
+    .or(`name.ilike.%${query}%,tagline.ilike.%${query}%`)
+    .range((page - 1) * PAGE_SIZE, page * PAGE_SIZE - 1);
+
+  if (error) {
+    throw new Error(error.message);
+  }
+
+  return data as Product[];
+};
+
+export const getPagesBySearch = async ({ query }: { query: string }) => {
+  const { error, count } = await client
+    .from("products")
+    .select(`product_id`, { count: "exact", head: true })
+    .or(`name.ilike.%${query}%,tagline.ilike.%${query}%`);
+
+  if (error) {
+    throw new Error(error.message);
+  }
+
+  if (!count) {
+    return 1;
+  }
+
+  return Math.ceil(count / PAGE_SIZE);
+};
+
+// view에서 select된 데이터는 모두 Nullable로 반환되기 때문에 supabase-client.ts 에서 type-fest를 이용해 SetNonNullable 처리
+export const getProductById = async (productId: number) => {
+  const { data, error } = await client
+    .from("product_overview_view")
+    .select("*")
+    .eq("product_id", productId)
+    .single();
+
+  if (error) {
+    throw new Error(error.message);
+  }
+
+  return data;
+};
+
+export const getReviewsByProductId = async (productId: number) => {
+  const { data, error } = await client
+    .from("reviews")
+    .select(
+      `
+    review_id,
+    rating,
+    review,
+    created_at,
+    user:profiles(
+      name,
+      username,
+      avatar
+    )
+    `
+    )
+    .eq("product_id", productId);
+  if (error) {
+    throw new Error(error.message);
+  }
+  return data;
 };

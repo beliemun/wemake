@@ -4,12 +4,8 @@ import { NavLink, Outlet } from "react-router";
 import { Button, buttonVariants } from "~/common/components/ui/button";
 import type { Route } from "./+types/product-overview-layout";
 import { cn } from "~/lib/utils";
-
-export function loader({ params }: Route.LoaderArgs) {
-  return {
-    productId: params.productId,
-  };
-}
+import { getProductById } from "../queries";
+import { z } from "zod";
 
 export function meta() {
   return [
@@ -18,21 +14,43 @@ export function meta() {
   ];
 }
 
+const paramsSchema = z.object({
+  productId: z.coerce.number(),
+});
+
+export const loader = async ({ params }: Route.LoaderArgs) => {
+  const parsedParams = paramsSchema.parse(params);
+  const product = await getProductById(parsedParams.productId);
+  return { product };
+};
+
 // productId는 routes.tsx에서 정의되어 있기 때문에 여기서 사용할 수 있음
-export default function ProductOverviewLayout({ params: { productId } }: Route.ComponentProps) {
+export default function ProductOverviewLayout({ loaderData }: Route.ComponentProps) {
   return (
     <main className="flex flex-col px-4 py-8 gap-8">
       <div className="flex flex-row justify-between">
         <div className="flex flex-row gap-4">
-          <img className="size-40 shadow-sm bg-muted" />
+          <img
+            className="size-40 shadow-sm bg-muted"
+            src={loaderData.product.icon}
+            alt={loaderData.product.name}
+          />
           <div className="flex flex-col gap-2">
-            <h1 className="text-2xl font-bold text-foreground">Product Name</h1>
-            <p className="text-sm text-muted-foreground">Product Description</p>
+            <h1 className="text-2xl font-bold text-foreground">{loaderData.product.name}</h1>
+            <p className="text-sm text-muted-foreground">{loaderData.product.tagline}</p>
             <div className="flex flex-row gap-1">
               {Array.from({ length: 5 }).map((_, index) => (
-                <StarIcon key={index} className="size-4 text-yellow-500" fill="currentColor" />
+                <StarIcon
+                  key={index}
+                  className="size-4 text-yellow-500"
+                  fill={
+                    index < Math.floor(loaderData.product.average_rating) ? "currentColor" : "none"
+                  }
+                />
               ))}
-              <span className="text-sm text-muted-foreground ml-2">100 reviews</span>
+              <span className="text-sm text-muted-foreground ml-2">
+                {loaderData.product.reviews} reviews
+              </span>
             </div>
           </div>
         </div>
@@ -42,7 +60,7 @@ export default function ProductOverviewLayout({ params: { productId } }: Route.C
           </Button>
           <Button className="cursor-pointer" size="lg">
             <ChevronUp className="size-4" />
-            Upvote (100)
+            Upvote ({loaderData.product.upvotes})
           </Button>
         </div>
       </div>
@@ -51,7 +69,7 @@ export default function ProductOverviewLayout({ params: { productId } }: Route.C
           className={({ isActive }) =>
             cn(buttonVariants({ variant: isActive ? "default" : "secondary" }))
           }
-          to={`/products/${productId}/overview`}
+          to={`/products/${loaderData.product.product_id}/overview`}
         >
           Overview
         </NavLink>
@@ -59,12 +77,18 @@ export default function ProductOverviewLayout({ params: { productId } }: Route.C
           className={({ isActive }) =>
             cn(buttonVariants({ variant: isActive ? "default" : "secondary" }))
           }
-          to={`/products/${productId}/reviews`}
+          to={`/products/${loaderData.product.product_id}/reviews`}
         >
           Reviews
         </NavLink>
       </div>
-      <Outlet />
+      <Outlet
+        context={{
+          description: loaderData.product.description,
+          how_it_works: loaderData.product.how_it_works,
+          productId: loaderData.product.product_id,
+        }}
+      />
     </main>
   );
 }

@@ -102,9 +102,9 @@ export default function YearlyLeaderboardPage({ loaderData }: Route.ComponentPro
         {loaderData.products.map((product) => (
           <ProductCard
             key={product.product_id}
-            link={`/products/productId-${product.product_id}`}
+            link={`/products/${product.product_id}`}
             productName={product.name}
-            productDescription={product.description}
+            productDescription={product.tagline}
             commentsCount={product.reviews}
             viewsCount={product.views}
             votesCount={product.upvotes}

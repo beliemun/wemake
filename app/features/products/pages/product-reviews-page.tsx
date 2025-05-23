@@ -2,12 +2,8 @@ import { Button } from "~/common/components/ui/button";
 import { CreateReviewDialog, ReviewCard } from "../components";
 import type { Route } from "./+types/product-reviews-page";
 import { Dialog, DialogTrigger } from "~/common/components/ui/dialog";
-
-export function loader({ params }: Route.LoaderArgs) {
-  return {
-    productId: params.productId,
-  };
-}
+import { useLoaderData, useOutletContext } from "react-router";
+import { getReviewsByProductId } from "../queries";
 
 export function meta() {
   return [
@@ -16,12 +12,20 @@ export function meta() {
   ];
 }
 
-export default function ProductReviewsPage({ params: { productId } }: Route.ComponentProps) {
+export const loader = async ({ params }: Route.LoaderArgs) => {
+  const { productId } = params;
+  const reviews = await getReviewsByProductId(Number(productId));
+  return { reviews };
+};
+
+export default function ProductReviewsPage({ loaderData }: Route.ComponentProps) {
+  const { productId } = useOutletContext<{ productId: number }>();
+
   return (
     <Dialog>
       <div className="max-w-screen-md">
         <div className="flex flex-row justify-between">
-          <h2 className="text-foreground font-bold">10 Reviews</h2>
+          <h2 className="text-foreground font-bold">{loaderData.reviews.length} reviews</h2>
           <DialogTrigger asChild>
             <Button variant="secondary" className="cursor-pointer">
               Write a review
@@ -29,15 +33,16 @@ export default function ProductReviewsPage({ params: { productId } }: Route.Comp
           </DialogTrigger>
         </div>
         <div className="flex flex-col gap-4">
-          {Array.from({ length: 5 }).map((_, index) => (
+          {loaderData.reviews.map((review) => (
             <ReviewCard
-              key={index}
-              username="John Doe"
-              userHandle="username"
-              userAvatar="https://github.com/shadcn.png"
-              userInitial="JD"
-              rating={4}
-              content="Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, quos. Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, quos. Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, quos."
+              key={review.review_id}
+              name={review.user.name}
+              userName={review.user.username}
+              avatar={review.user.avatar}
+              initial={review.user.name.slice(0, 2)}
+              rating={review.rating}
+              content={review.review}
+              created_at={review.created_at}
             />
           ))}
         </div>

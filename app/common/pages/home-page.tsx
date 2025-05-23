@@ -49,9 +49,9 @@ export default function HomePage({ loaderData }: Route.ComponentProps) {
         {loaderData.products.map((product, index) => (
           <ProductCard
             key={product.product_id}
-            link={`/products/productId-${product.product_id}`}
+            link={`/products/${product.product_id}`}
             productName={product.name}
-            productDescription={product.description}
+            productDescription={product.tagline}
             commentsCount={product.reviews}
             viewsCount={product.views}
             votesCount={product.upvotes}

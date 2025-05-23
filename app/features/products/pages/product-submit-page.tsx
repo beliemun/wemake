@@ -1,11 +1,10 @@
 import { Hero } from "~/common/components/hero";
-import type { Route } from "./+types/submit-page";
 import { Form } from "react-router";
 import InputPair from "~/common/components/input-pair";
-
 import SelectPair from "~/common/components/select-pair";
 import FilePair from "~/common/components/file-pair";
 import { Button } from "~/common/components/ui/button";
+import type { Route } from "./+types/categories-page";
 export const meta: Route.MetaFunction = () => {
   return [
     { title: "Submit Product | Wemake" },

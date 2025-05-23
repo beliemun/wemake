@@ -62,9 +62,9 @@ export default function LeaderboardPage({ loaderData }: Route.ComponentProps) {
         {loaderData.dailyProducts.map((product) => (
           <ProductCard
             key={product.product_id}
-            link={`/products/productId-${product.product_id}`}
+            link={`/products/${product.product_id}`}
             productName={product.name}
-            productDescription={product.description}
+            productDescription={product.tagline}
             commentsCount={product.reviews}
             viewsCount={product.views}
             votesCount={product.upvotes}
@@ -85,9 +85,9 @@ export default function LeaderboardPage({ loaderData }: Route.ComponentProps) {
         {loaderData.weeklyProducts.map((product) => (
           <ProductCard
             key={product.product_id}
-            link={`/products/productId-${product.product_id}`}
+            link={`/products/${product.product_id}`}
             productName={product.name}
-            productDescription={product.description}
+            productDescription={product.tagline}
             commentsCount={product.reviews}
             viewsCount={product.views}
             votesCount={product.upvotes}
@@ -110,9 +110,9 @@ export default function LeaderboardPage({ loaderData }: Route.ComponentProps) {
         {loaderData.monthlyProducts.map((product) => (
           <ProductCard
             key={product.product_id}
-            link={`/products/productId-${product.product_id}`}
+            link={`/products/${product.product_id}`}
             productName={product.name}
-            productDescription={product.description}
+            productDescription={product.tagline}
             commentsCount={product.reviews}
             viewsCount={product.views}
             votesCount={product.upvotes}
@@ -133,9 +133,9 @@ export default function LeaderboardPage({ loaderData }: Route.ComponentProps) {
         {loaderData.yearlyProducts.map((product) => (
           <ProductCard
             key={product.product_id}
-            link={`/products/productId-${product.product_id}`}
+            link={`/products/${product.product_id}`}
             productName={product.name}
-            productDescription={product.description}
+            productDescription={product.tagline}
             commentsCount={product.reviews}
             viewsCount={product.views}
             votesCount={product.upvotes}

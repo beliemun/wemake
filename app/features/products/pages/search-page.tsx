@@ -3,18 +3,28 @@ import type { Route } from "./+types/search-page";
 import { Hero } from "~/common/components/hero";
 import ProductPagination from "~/common/components/product-pagination";
 import { ProductCard } from "..";
-import { Form } from "react-router";
+import { data, Form } from "react-router";
 import { Input } from "~/common/components/ui/input";
 import { Button } from "~/common/components/ui/button";
+import { getPagesBySearch, getProductBySearch } from "../queries";
 
-const paramsSchema = z.object({
+const searchParams = z.object({
   query: z.string().optional().default(""),
   page: z.coerce.number().optional().default(1),
 });
 
-export function loader({ request }: Route.LoaderArgs) {
+export async function loader({ request }: Route.LoaderArgs) {
   const url = new URL(request.url);
-  const parsedData = paramsSchema.parse(Object.fromEntries(url.searchParams));
+  const { success, data: parseData } = searchParams.safeParse(Object.fromEntries(url.searchParams));
+  if (!success) {
+    throw new Error("Invalid search params");
+  }
+  if (parseData.query === "") {
+    return { products: [], totalPages: 1 };
+  }
+  const products = await getProductBySearch({ query: parseData.query, page: parseData.page });
+  const totalPages = await getPagesBySearch({ query: parseData.query });
+  return { products, totalPages };
 }
 
 export function meta() {
@@ -30,19 +40,19 @@ export default function SearchPage({ loaderData }: Route.ComponentProps) {
         <Button type="submit">Search</Button>
       </Form>
       <div className="grid grid-cols-1 gap-4">
-        {Array.from({ length: 10 }).map((_, index) => (
+        {loaderData.products.map((product) => (
           <ProductCard
-            key={index}
-            link={`/products/productId-${index}`}
-            productName="Product Name"
-            productDescription="Product Description"
-            commentsCount={100}
-            viewsCount={100}
-            votesCount={100}
+            key={product.product_id}
+            link={`/products/${product.product_id}`}
+            productName={product.name}
+            productDescription={product.tagline}
+            commentsCount={product.reviews}
+            viewsCount={product.views}
+            votesCount={product.upvotes}
           />
         ))}
       </div>
-      <ProductPagination totalPages={10} />
+      <ProductPagination totalPages={loaderData.totalPages} />
     </main>
   );
 }

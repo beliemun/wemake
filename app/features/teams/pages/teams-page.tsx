@@ -15,7 +15,7 @@ export default function TeamsPage() {
           <TeamCard
             key={index}
             username="brian"
-            userAvatar="https://github.com/shadcn.png"
+            avatar="https://github.com/shadcn.png"
             userInitial="B"
             position={["React Developer", "Frontend Developer", "Backend Developer"]}
             description="to build a new social media platform."
