@@ -15,13 +15,20 @@ import { Avatar, AvatarFallback, AvatarImage } from "~/common/components/ui/avat
 import { Badge } from "~/common/components/ui/badge";
 import { IoChatbubbleOutline } from "react-icons/io5";
 import { Reply } from "../components/comment";
-
+import { getPostById } from "../queries";
+import { DateTime } from "luxon";
 export const meta: Route.MetaFunction = () => [
   { title: "게시글 | WeMake" },
   { name: "description", content: "WeMake 커뮤니티 게시글을 확인해보세요." },
 ];
 
-export default function PostPage() {
+export const loader = async ({ params }: Route.LoaderArgs) => {
+  const post = await getPostById(Number(params.postId));
+  return { post };
+};
+
+export default function PostPage({ loaderData }: Route.ComponentProps) {
+  console.log(loaderData);
   return (
     <main className="flex flex-col gap-10">
       <Breadcrumb>
@@ -34,13 +41,15 @@ export default function PostPage() {
           <BreadcrumbSeparator />
           <BreadcrumbItem>
             <BreadcrumbLink asChild>
-              <Link to="/community/post">게시글</Link>
+              <Link to={`/community?topic=${loaderData.post.topic_slug}`}>
+                {loaderData.post.topic_name}
+              </Link>
             </BreadcrumbLink>
           </BreadcrumbItem>
           <BreadcrumbSeparator />
           <BreadcrumbItem>
             <BreadcrumbLink asChild>
-              <Link to="/community/post">What is the best productivity tool?</Link>
+              <Link to={`/community/${loaderData.post.post_id}`}>{loaderData.post.title}</Link>
             </BreadcrumbLink>
           </BreadcrumbItem>
         </BreadcrumbList>
@@ -53,34 +62,31 @@ export default function PostPage() {
               className="flex flex-col items-center justify-center cursor-pointer h-14"
             >
               <ChevronUp className="w-4 h-4 text-foreground" />
-              <span className="text-sm text-foreground">10</span>
+              <span className="text-sm text-foreground">{loaderData.post.upvotes}</span>
             </Button>
             <div className="flex flex-col gap-6">
-              <h2 className="text-2xl font-bold text-foreground">
-                What is the best productivity tool?
-              </h2>
+              <h2 className="text-2xl font-bold text-foreground">{loaderData.post.title}</h2>
               <div>
                 <div className="flex items-center">
                   <p className="text-sm text-muted-foreground">
-                    Posted by <Link to="/user/1">@brain</Link>
+                    Posted by <Link to="/user/1">@{loaderData.post.author_name}</Link>
                   </p>
                   <DotIcon className="w-4 h-4 text-muted-foreground" />
-                  <p className="text-sm text-muted-foreground">12 hours ago</p>
+                  <p className="text-sm text-muted-foreground">
+                    {DateTime.fromISO(loaderData.post.created_at).toRelative()}
+                  </p>
                   <DotIcon className="w-4 h-4 text-muted-foreground" />
-                  <p className="text-sm text-muted-foreground">10 Replies</p>
+                  <p className="text-sm text-muted-foreground">
+                    {loaderData.post.reply_count} Replies
+                  </p>
                 </div>
-                <p className="text-sm text-muted-foreground mt-6">
-                  Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, quos. Lorem
-                  ipsum dolor sit amet consectetur adipisicing elit. Quisquam, quos. Lorem ipsum
-                  dolor sit amet consectetur adipisicing elit. Quisquam, quos. Lorem ipsum dolor sit
-                  amet consectetur adipisicing elit. Quisquam, quos.
-                </p>
+                <p className="text-sm text-muted-foreground mt-6">{loaderData.post.content}</p>
               </div>
               <div>
                 <Form className="flex gap-6">
                   <Avatar className="w-10 h-10">
-                    <AvatarFallback>CN</AvatarFallback>
-                    <AvatarImage src="https://github.com/shadcn.png" />
+                    <AvatarFallback>{loaderData.post.author_name.slice(0, 2)}</AvatarFallback>
+                    <AvatarImage src={loaderData.post.author_avatar} />
                   </Avatar>
                   <div className="flex flex-col items-end gap-6 w-full">
                     <Textarea
@@ -94,13 +100,15 @@ export default function PostPage() {
                   </div>
                 </Form>
                 <div className="flex flex-col gap-4">
-                  <h4 className="text-sm font-bold text-muted-foreground">10 Replies</h4>
-                  {Array.from({ length: 10 }).map((_, index) => (
+                  <h4 className="text-sm font-bold text-muted-foreground">
+                    {loaderData.post.reply_count} Replies
+                  </h4>
+                  {Array.from({ length: loaderData.post.reply_count }).map((_, index) => (
                     <Reply
                       key={index}
-                      authorName="John Doe"
-                      authorAvatar="https://github.com/shadcn.png"
-                      timestamp="12 hours ago"
+                      authorName={loaderData.post.author_name}
+                      authorAvatar={loaderData.post.author_avatar}
+                      timestamp={DateTime.fromISO(loaderData.post.created_at).toRelative()}
                       content="Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, quos.
                       Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, quos.
                       Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, quos.
@@ -121,15 +129,19 @@ export default function PostPage() {
                 <AvatarImage src="https://github.com/shadcn.png" />
               </Avatar>
               <div className="flex flex-col gap-1">
-                <p className="text-sm font-bold text-foreground">John Doe</p>
+                <p className="text-sm font-bold text-foreground">{loaderData.post.author_name}</p>
                 <Badge variant="secondary">
-                  <span className="text-xs">Enterpreneur</span>
+                  <span className="text-xs">{loaderData.post.author_role}</span>
                 </Badge>
               </div>
             </div>
             <div className="flex flex-col gap-2">
-              <p className="text-xs text-muted-foreground">🎂 Joined 3 months ago</p>
-              <p className="text-xs text-muted-foreground">🚀 Launched 100+ products</p>
+              <p className="text-xs text-muted-foreground">
+                🎂 Joined {DateTime.fromISO(loaderData.post.author_created_at).toRelative()}
+              </p>
+              <p className="text-xs text-muted-foreground">
+                🚀 Launched {loaderData.post.products} products
+              </p>
             </div>
             <Button variant="outline" className="w-full">
               Follow

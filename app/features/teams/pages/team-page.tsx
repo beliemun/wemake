@@ -6,33 +6,43 @@ import { Badge } from "~/common/components/ui/badge";
 import { Button } from "~/common/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "~/common/components/ui/card";
 import { Separator } from "~/common/components/ui/separator";
+import { getTeamById } from "../queries";
+import type { Route } from "./+types/team-page";
 
 export const meta = () => {
   return [{ title: "팀 상세 | WeMake" }, { description: "팀의 상세 정보를 확인하세요." }];
 };
 
-export default function TeamPage() {
+export const loader = async ({ params }: Route.LoaderArgs) => {
+  const team = await getTeamById(Number(params.teamId));
+  return { team };
+};
+
+export default function TeamPage({ loaderData }: Route.ComponentProps) {
   return (
     <div className="space-y-6">
-      <Hero title="팀 상세" description="팀의 상세 정보를 확인하세요." />
+      <Hero
+        title={`${loaderData.team.product_name}의 팀`}
+        description="팀의 상세 정보를 확인하세요."
+      />
       <div className="grid grid-cols-7 items-start gap-6">
         <div className="col-span-5 grid grid-cols-4 gap-6">
           {[
             {
               title: "Product Name",
-              value: "Doggie Social",
+              value: loaderData.team.product_name,
             },
             {
               title: "Stage",
-              value: "MVP",
+              value: "Prototype",
             },
             {
               title: "Team Size",
-              value: "10",
+              value: loaderData.team.team_size,
             },
             {
               title: "Available Equity",
-              value: "50%",
+              value: `${loaderData.team.equity_split}%`,
             },
           ].map((Item, index) => (
             <Card key={index} className="p-4">
@@ -49,24 +59,17 @@ export default function TeamPage() {
 
             <CardContent className="p-0">
               <ul className="row-span-2 list-disc list-inside space-y-2 text-muted-foreground">
-                {["React Developer", "Frontend Developer", "Backend Developer"].map(
-                  (Item, index) => (
-                    <li key={index}>{Item}</li>
-                  )
-                )}
+                {loaderData.team.roles}
               </ul>
             </CardContent>
           </Card>
           <Card className="p-4 col-span-2">
             <CardHeader className="p-0">
-              <CardTitle>Looking For</CardTitle>
+              <CardTitle>{loaderData.team.product_description}</CardTitle>
             </CardHeader>
 
             <CardContent className="p-0">
-              <p className="text-muted-foreground">
-                Doggie Social is a social media platform for dogs. We are looking for a React
-                Developer who is interested in building a social media platform for dogs.
-              </p>
+              <p className="text-muted-foreground">{loaderData.team.product_description}</p>
             </CardContent>
           </Card>
         </div>
@@ -74,13 +77,15 @@ export default function TeamPage() {
           <div className="flex flex-col gap-4">
             <div className="flex items-center gap-2">
               <Avatar className="w-10 h-10">
-                <AvatarFallback>CN</AvatarFallback>
-                <AvatarImage src="https://github.com/shadcn.png" />
+                <AvatarFallback>{loaderData.team.team_leader.username.slice(0, 2)}</AvatarFallback>
+                <AvatarImage src={loaderData.team.team_leader.avatar ?? undefined} />
               </Avatar>
               <div className="flex flex-col gap-1">
-                <p className="text-sm font-bold text-foreground">John Doe</p>
+                <p className="text-sm font-bold text-foreground">
+                  {loaderData.team.team_leader.username}
+                </p>
                 <Badge variant="secondary">
-                  <span className="text-xs">Enterpreneur</span>
+                  <span className="text-xs">{loaderData.team.team_leader.role}</span>
                 </Badge>
               </div>
             </div>
@@ -97,12 +102,12 @@ export default function TeamPage() {
                 description="Why do you want to join?"
                 textArea
               />
-              <Button type="submit" className="w-full">
+              <Button type="submit" className="w-ful cursor-pointer">
                 Apply
               </Button>
             </Form>
             <Separator />
-            <Button variant="outline" className="w-full">
+            <Button variant="outline" className="w-full cursor-pointer">
               Follow
             </Button>
           </div>

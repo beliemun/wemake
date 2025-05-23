@@ -9,7 +9,7 @@ import { Textarea } from "~/common/components/ui/textarea";
 interface ReplyProps {
   authorName: string;
   authorAvatar?: string;
-  timestamp: string;
+  timestamp: string | null;
   content: string;
   topLevel: boolean;
 }

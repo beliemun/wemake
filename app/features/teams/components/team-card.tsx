@@ -10,7 +10,7 @@ interface TeamCardProps {
   userInitial: string;
   position: string[];
   description: string;
-  teamId: string;
+  teamId: number;
 }
 
 export function TeamCard({
