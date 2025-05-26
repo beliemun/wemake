@@ -7,15 +7,13 @@ import {
   BreadcrumbList,
   BreadcrumbSeparator,
 } from "~/common/components/ui/breadcrumb";
-import { CakeIcon, ChevronUp, DotIcon } from "lucide-react";
+import { ChevronUp, DotIcon } from "lucide-react";
 import { Button } from "~/common/components/ui/button";
-import InputPair from "~/common/components/input-pair";
 import { Textarea } from "~/common/components/ui/textarea";
 import { Avatar, AvatarFallback, AvatarImage } from "~/common/components/ui/avatar";
 import { Badge } from "~/common/components/ui/badge";
-import { IoChatbubbleOutline } from "react-icons/io5";
 import { Reply } from "../components/comment";
-import { getPostById } from "../queries";
+import { getPostById, getReplies } from "../queries";
 import { DateTime } from "luxon";
 export const meta: Route.MetaFunction = () => [
   { title: "게시글 | WeMake" },
@@ -24,11 +22,12 @@ export const meta: Route.MetaFunction = () => [
 
 export const loader = async ({ params }: Route.LoaderArgs) => {
   const post = await getPostById(Number(params.postId));
-  return { post };
+  const replies = await getReplies(Number(params.postId));
+  return { post, replies };
 };
 
 export default function PostPage({ loaderData }: Route.ComponentProps) {
-  console.log(loaderData);
+  console.log(JSON.stringify(loaderData, null, 2));
   return (
     <main className="flex flex-col gap-10">
       <Breadcrumb>
@@ -82,7 +81,7 @@ export default function PostPage({ loaderData }: Route.ComponentProps) {
                 </div>
                 <p className="text-sm text-muted-foreground mt-6">{loaderData.post.content}</p>
               </div>
-              <div>
+              <div className="w-xl">
                 <Form className="flex gap-6">
                   <Avatar className="w-10 h-10">
                     <AvatarFallback>{loaderData.post.author_name.slice(0, 2)}</AvatarFallback>
@@ -109,11 +108,12 @@ export default function PostPage({ loaderData }: Route.ComponentProps) {
                       authorName={loaderData.post.author_name}
                       authorAvatar={loaderData.post.author_avatar}
                       timestamp={DateTime.fromISO(loaderData.post.created_at).toRelative()}
-                      content="Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, quos.
-                      Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, quos.
-                      Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, quos.
-                      Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, quos."
+                      content={loaderData.replies[index].reply}
                       topLevel={true}
+                      replies={loaderData.replies[index].post_replies.map((reply) => ({
+                        ...reply,
+                        user: reply.user as { name: string; avatar: string; username: string },
+                      }))}
                     />
                   ))}
                 </div>

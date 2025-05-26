@@ -1,4 +1,5 @@
 import { DotIcon } from "lucide-react";
+import { DateTime } from "luxon";
 import { useState } from "react";
 import { IoChatbubbleOutline } from "react-icons/io5";
 import { Form } from "react-router";
@@ -12,9 +13,26 @@ interface ReplyProps {
   timestamp: string | null;
   content: string;
   topLevel: boolean;
+  replies?: {
+    reply_id: number;
+    reply: string;
+    created_at: string;
+    user: {
+      name: string;
+      avatar: string;
+      username: string;
+    };
+  }[];
 }
 
-export function Reply({ authorName, authorAvatar, timestamp, content, topLevel }: ReplyProps) {
+export function Reply({
+  authorName,
+  authorAvatar,
+  timestamp,
+  content,
+  topLevel,
+  replies,
+}: ReplyProps) {
   const [replying, setReplying] = useState(false);
   const handleToggleReply = () => {
     setReplying((prev) => !prev);
@@ -28,7 +46,7 @@ export function Reply({ authorName, authorAvatar, timestamp, content, topLevel }
             {authorAvatar && <AvatarImage src={authorAvatar} />}
           </Avatar>
         </div>
-        <div className="flex flex-col gap-2 items-start">
+        <div className="flex flex-col gap-2 items-start w-full">
           <div className="flex flex-row items-center">
             <p className="text-sm font-bold text-foreground">{authorName}</p>
             <DotIcon className="w-4 h-4 text-muted-foreground" />
@@ -56,13 +74,16 @@ export function Reply({ authorName, authorAvatar, timestamp, content, topLevel }
       ) : null}
       {topLevel ? (
         <div className="pl-16">
-          <Reply
-            authorName="John Doe"
-            authorAvatar="https://github.com/shadcn.png"
-            timestamp="12 hours ago"
-            content="Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, quos. Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, quos. Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, quos."
-            topLevel={false}
-          />
+          {replies?.map((reply) => (
+            <Reply
+              key={reply.reply_id}
+              authorName={reply.user.name}
+              authorAvatar={reply.user.avatar}
+              timestamp={DateTime.fromISO(reply.created_at).toRelative()}
+              content={reply.reply}
+              topLevel={false}
+            />
+          ))}
         </div>
       ) : null}
     </div>

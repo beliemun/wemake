@@ -11,7 +11,7 @@ interface Product {
   reviews: number;
 }
 
-const productListSelect = `
+export const productListSelect = `
   product_id,
   name,
   tagline,

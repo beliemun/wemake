@@ -617,6 +617,13 @@ export type Database = {
             referencedRelation: "profiles"
             referencedColumns: ["profile_id"]
           },
+          {
+            foreignKeyName: "products_to_profiles"
+            columns: ["profile_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["profile_id"]
+          },
         ]
       }
       profiles: {

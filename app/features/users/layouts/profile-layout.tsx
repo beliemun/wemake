@@ -13,18 +13,31 @@ import {
 } from "~/common/components/ui/dialog";
 import { Textarea } from "~/common/components/ui/textarea";
 import { cn } from "~/lib/utils";
+import type { Route } from "./+types/profile-layout";
+import { getUserProfile } from "../quries";
 
-export default function ProfileLayout() {
+export const loader = async ({ params }: Route.LoaderArgs) => {
+  const { username } = params;
+  const user = await getUserProfile({ username: username as string });
+  console.log(user);
+  return { user };
+};
+
+export default function ProfileLayout({ loaderData }: Route.ComponentProps) {
+  console.log(JSON.stringify(loaderData, null, 2));
   return (
     <div className="space-y-8">
       <div className="flex flex-row items-center gap-4">
         <Avatar className="h-24 w-24">
-          <AvatarFallback>CN</AvatarFallback>
-          <AvatarImage src="https://github.com/shadcn.png" />
+          {loaderData.user.avatar ? (
+            <AvatarImage src={loaderData.user.avatar} />
+          ) : (
+            <AvatarFallback>CN</AvatarFallback>
+          )}
         </Avatar>
         <div className="flex flex-col gap-2">
           <div className="flex flex-row gap-2">
-            <h1 className="text-2xl font-bold text-foreground">John Doe</h1>
+            <h1 className="text-2xl font-bold text-foreground">{loaderData.user.name}</h1>
             <Button variant="default" className="cursor-pointer" asChild>
               <Link to="/my/settings">Edit Profile</Link>
             </Button>
@@ -52,9 +65,9 @@ export default function ProfileLayout() {
             </Dialog>
           </div>
           <div className="flex flex-row gap-2">
-            <span className="text-sm text-muted-foreground">@john_doe</span>
+            <span className="text-sm text-muted-foreground">@{loaderData.user.username}</span>
             <Badge variant="secondary">
-              <span className="text-xs">Product Manager</span>
+              <span className="text-xs">{loaderData.user.role}</span>
             </Badge>
             <Badge variant="secondary">
               <span className="text-xs">100 followers</span>
@@ -67,9 +80,9 @@ export default function ProfileLayout() {
       </div>
       <div className="flex flex-row gap-4">
         {[
-          { label: "About", to: "/users/username" },
-          { label: "Posts", to: "/users/username/posts" },
-          { label: "Products", to: "/users/username/products" },
+          { label: "About", to: `/users/${loaderData.user.username}` },
+          { label: "Posts", to: `/users/${loaderData.user.username}/posts` },
+          { label: "Products", to: `/users/${loaderData.user.username}/products` },
         ].map((item) => (
           <NavLink
             key={item.label}
@@ -83,7 +96,7 @@ export default function ProfileLayout() {
           </NavLink>
         ))}
       </div>
-      <Outlet />
+      <Outlet context={{ headline: loaderData.user.headline, bio: loaderData.user.bio }} />
     </div>
   );
 }

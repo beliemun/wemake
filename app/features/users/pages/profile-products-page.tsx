@@ -1,6 +1,6 @@
 import { ProductCard } from "~/features/products/components/product-card";
 import type { Route } from "./+types/profile-products-page";
-
+import { getUserProducts } from "../quries";
 export const meta: Route.MetaFunction = () => {
   return [
     {
@@ -10,20 +10,26 @@ export const meta: Route.MetaFunction = () => {
   ];
 };
 
-export default function ProfileProductsPage() {
+export const loader = async ({ params }: Route.LoaderArgs) => {
+  const { username } = params;
+  const products = await getUserProducts({ username: username as string });
+  return { products };
+};
+
+export default function ProfileProductsPage({ loaderData }: Route.ComponentProps) {
   return (
     <div className="space-y-8">
       <h2 className="text-2xl font-bold">제품 목록</h2>
       <div className="grid grid-cols-1 gap-4">
-        {Array.from({ length: 10 }).map((_, index) => (
+        {loaderData.products.map((product) => (
           <ProductCard
-            key={index}
-            link={`/products/${index}`}
-            productName="제품 이름"
-            productDescription="제품 설명"
-            commentsCount={0}
-            votesCount={0}
-            viewsCount={0}
+            key={product.product_id}
+            link={`/products/${product.product_id}`}
+            productName={product.name}
+            productDescription={product.tagline}
+            commentsCount={product.reviews ?? 0}
+            votesCount={product.upvotes ?? 0}
+            viewsCount={product.views ?? 0}
           />
         ))}
       </div>
