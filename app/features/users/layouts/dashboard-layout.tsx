@@ -10,7 +10,6 @@ import { Sidebar } from "~/common/components/ui/sidebar";
 import { SidebarProvider } from "~/common/components/ui/sidebar";
 import { HomeIcon, LightbulbIcon, PackageIcon } from "lucide-react";
 import { useLocation } from "react-router";
-import { cn } from "~/lib/utils";
 export default function DashboardLayout() {
   const location = useLocation();
   return (

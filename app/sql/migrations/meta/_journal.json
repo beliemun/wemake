@@ -50,6 +50,13 @@
       "when": 1748223403793,
       "tag": "0006_sleepy_runaways",
       "breakpoints": true
+    },
+    {
+      "idx": 7,
+      "version": "7",
+      "when": 1748236984644,
+      "tag": "0007_flippant_hobgoblin",
+      "breakpoints": true
     }
   ]
 }

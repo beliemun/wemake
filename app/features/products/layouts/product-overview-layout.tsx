@@ -1,6 +1,6 @@
 import { StarIcon } from "lucide-react";
 import { ChevronUp } from "lucide-react";
-import { NavLink, Outlet } from "react-router";
+import { NavLink, Outlet, useNavigate } from "react-router";
 import { Button, buttonVariants } from "~/common/components/ui/button";
 import type { Route } from "./+types/product-overview-layout";
 import { cn } from "~/lib/utils";
@@ -26,6 +26,7 @@ export const loader = async ({ params }: Route.LoaderArgs) => {
 
 // productId는 routes.tsx에서 정의되어 있기 때문에 여기서 사용할 수 있음
 export default function ProductOverviewLayout({ loaderData }: Route.ComponentProps) {
+  const navigate = useNavigate();
   return (
     <main className="flex flex-col px-4 py-8 gap-8">
       <div className="flex flex-row justify-between">
@@ -55,7 +56,12 @@ export default function ProductOverviewLayout({ loaderData }: Route.ComponentPro
           </div>
         </div>
         <div className="flex flex-row gap-4">
-          <Button className="cursor-pointer" variant="secondary" size="lg">
+          <Button
+            className="cursor-pointer"
+            variant="secondary"
+            size="lg"
+            onClick={() => navigate(`/products/${loaderData.product.product_id}/visit`)}
+          >
             Visit Website
           </Button>
           <Button className="cursor-pointer" size="lg">

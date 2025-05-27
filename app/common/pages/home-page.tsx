@@ -150,7 +150,7 @@ export default function HomePage({ loaderData }: Route.ComponentProps) {
             userInitial={team.team_leader.username[0]}
             position={team.roles.split(",")}
             description={team.product_description}
-            teamId={team.team_id.toString()}
+            teamId={Number(team.team_id)}
           />
         ))}
       </section>

@@ -27,7 +27,6 @@ export const loader = async ({ params }: Route.LoaderArgs) => {
 };
 
 export default function PostPage({ loaderData }: Route.ComponentProps) {
-  console.log(JSON.stringify(loaderData, null, 2));
   return (
     <main className="flex flex-col gap-10">
       <Breadcrumb>

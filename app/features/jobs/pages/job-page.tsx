@@ -11,13 +11,11 @@ export const meta: Route.MetaFunction = () => {
 
 export const loader = async ({ params }: Route.LoaderArgs) => {
   const job = await getJobById(Number(params.jobId));
-  console.log(job);
   return { job };
 };
 
 export default function JobPage({ loaderData }: Route.ComponentProps) {
   const { job } = loaderData;
-  console.log(job);
 
   return (
     <div className="flex flex-col gap-8">

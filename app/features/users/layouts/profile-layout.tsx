@@ -19,12 +19,10 @@ import { getUserProfile } from "../quries";
 export const loader = async ({ params }: Route.LoaderArgs) => {
   const { username } = params;
   const user = await getUserProfile({ username: username as string });
-  console.log(user);
   return { user };
 };
 
 export default function ProfileLayout({ loaderData }: Route.ComponentProps) {
-  console.log(JSON.stringify(loaderData, null, 2));
   return (
     <div className="space-y-8">
       <div className="flex flex-row items-center gap-4">
