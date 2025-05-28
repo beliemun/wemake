@@ -1,17 +1,21 @@
-import client from "~/supabase-client";
 import type { JobType, Location, SalaryRange } from "./types";
+import type { Database } from "~/supabase-client";
+import type { SupabaseClient } from "@supabase/supabase-js";
 
-export const getJobs = async ({
-  limit,
-  location,
-  jobType,
-  salary,
-}: {
-  limit: number;
-  location?: Location;
-  jobType?: JobType;
-  salary?: SalaryRange;
-}) => {
+export const getJobs = async (
+  client: SupabaseClient<Database>,
+  {
+    limit,
+    location,
+    jobType,
+    salary,
+  }: {
+    limit: number;
+    location?: Location;
+    jobType?: JobType;
+    salary?: SalaryRange;
+  }
+) => {
   let baseQuery = client
     .from("jobs")
     .select(
@@ -51,7 +55,7 @@ export const getJobs = async ({
   return data;
 };
 
-export const getJobById = async (jobId: number) => {
+export const getJobById = async (client: SupabaseClient<Database>, jobId: number) => {
   const { data, error } = await client.from("jobs").select("*").eq("job_id", jobId).single();
   if (error) {
     throw new Error(error.message);

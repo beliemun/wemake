@@ -14,6 +14,7 @@ import "./app.css";
 import Navigation from "./common/components/navigation";
 import { Settings } from "luxon";
 import { cn } from "./lib/utils";
+import { makeSsrClient } from "./supabase-client";
 
 export const links: Route.LinksFunction = () => [
   { rel: "preconnect", href: "https://fonts.googleapis.com" },
@@ -48,11 +49,20 @@ export function Layout({ children }: { children: React.ReactNode }) {
   );
 }
 
-export default function App() {
+export const loader = async ({ request }: Route.LoaderArgs) => {
+  const { client, headers } = makeSsrClient(request);
+  const {
+    data: { user },
+  } = await client.auth.getUser();
+
+  return { user };
+};
+
+export default function App({ loaderData }: Route.ComponentProps) {
   const { pathname } = useLocation();
   const navigation = useNavigation();
   const isLoading = navigation.state === "loading";
-
+  const { user } = loaderData;
   return (
     <main
       className={cn({
@@ -62,7 +72,7 @@ export default function App() {
     >
       <div>
         {pathname.includes("/auth") ? null : (
-          <Navigation isSignedIn={true} hasNotifications={true} hasMessages={true} />
+          <Navigation isSignedIn={!!user} hasNotifications={true} hasMessages={true} />
         )}
       </div>
       <div className="flex justify-center">

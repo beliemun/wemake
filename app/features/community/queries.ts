@@ -1,9 +1,6 @@
-import db from "~/db";
-import { posts, postUpvotes, topics } from "./schema";
-import { count, asc, eq, desc } from "drizzle-orm";
-import { profiles } from "../users/schema";
-import client from "~/supabase-client";
 import { DateTime } from "luxon";
+import type { Database } from "~/supabase-client";
+import type { SupabaseClient } from "@supabase/supabase-js";
 
 // export const getTopics = async () => {
 //   const allTopics = await db
@@ -16,7 +13,7 @@ import { DateTime } from "luxon";
 //   return allTopics;
 // };
 
-export const getTopics = async () => {
+export const getTopics = async (client: SupabaseClient<Database>) => {
   // await new Promise((resolve) => setTimeout(resolve, 3000));
   const { data, error } = await client.from("topics").select("name, slug");
   if (error) {
@@ -47,19 +44,22 @@ export const getTopics = async () => {
 //   return allPosts;
 // };
 
-export const getPosts = async ({
-  limit,
-  sorting,
-  period,
-  search,
-  topic,
-}: {
-  limit: number;
-  sorting: "newest" | "popular";
-  period: "all" | "today" | "week" | "month" | "year";
-  search?: string;
-  topic?: string;
-}) => {
+export const getPosts = async (
+  client: SupabaseClient<Database>,
+  {
+    limit,
+    sorting,
+    period,
+    search,
+    topic,
+  }: {
+    limit: number;
+    sorting: "newest" | "popular";
+    period: "all" | "today" | "week" | "month" | "year";
+    search?: string;
+    topic?: string;
+  }
+) => {
   // 괄호'()'를 활용하면 해당 테이블 중 원하는 컬럼만 가져올 수 있다.
   // supabase 에서는 기본적으로 left join 을 사용한다. 따라서 조인되지 않은 데이터는 null 로 표시된다.
   // inner join 을 사용하려면 컬럼명 다음에 !inner 를 붙이면 된다.
@@ -99,7 +99,7 @@ export const getPosts = async ({
   return data;
 };
 
-export const getPostById = async (postId: number) => {
+export const getPostById = async (client: SupabaseClient<Database>, postId: number) => {
   const { data, error } = await client
     .from("community_post_detail")
     .select("*")
@@ -111,7 +111,7 @@ export const getPostById = async (postId: number) => {
   return data;
 };
 
-export const getReplies = async (postId: number) => {
+export const getReplies = async (client: SupabaseClient<Database>, postId: number) => {
   const replyQuery = `
     reply_id,
     reply,

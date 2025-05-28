@@ -261,7 +261,7 @@ const Navigation = ({
                 </DropdownMenuGroup>
                 <Separator />
                 <DropdownMenuItem className="cursor-pointer" asChild>
-                  <Link to="/sign-out">
+                  <Link to="/auth/sign-out">
                     <LogOut />
                     Sign Out
                   </Link>

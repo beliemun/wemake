@@ -1,7 +1,7 @@
 import { Hero } from "~/common/components/hero";
 import type { Route } from "./+types/community-page";
 import { Button } from "~/common/components/ui/button";
-import { Form, Link, useSearchParams, useNavigate, useLoaderData, Await, data } from "react-router";
+import { Form, Link, useSearchParams, useNavigate, Await, data } from "react-router";
 import {
   DropdownMenu,
   DropdownMenuTrigger,
@@ -15,6 +15,7 @@ import { PostCard } from "~/features/posts/components/post-card";
 import { getPosts, getTopics } from "../queries";
 import { Suspense } from "react";
 import { z } from "zod";
+import { makeSsrClient } from "~/supabase-client";
 
 export const meta: Route.MetaFunction = () => [
   { title: "커뮤니티 | WeMake" },
@@ -29,6 +30,7 @@ const searchParamsSchema = z.object({
 });
 
 export const loader = async ({ request }: Route.LoaderArgs) => {
+  const { client, headers } = makeSsrClient(request);
   const url = new URL(request.url);
   const { success, data: parsedData } = searchParamsSchema.safeParse(
     Object.fromEntries(url.searchParams)
@@ -47,8 +49,8 @@ export const loader = async ({ request }: Route.LoaderArgs) => {
   // const topics = await getTopics();
   // const posts = await getPosts();
   // const [topics, posts] = await Promise.all([getTopics(), getPosts()]);
-  const topics = getTopics();
-  const posts = getPosts({
+  const topics = getTopics(client);
+  const posts = getPosts(client, {
     limit: 10,
     sorting: parsedData.sorting,
     period: parsedData.period,

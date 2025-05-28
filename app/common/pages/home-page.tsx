@@ -14,22 +14,24 @@ import { getPosts } from "~/features/community/queries";
 import { getGptIdeas } from "~/features/ideas/queries";
 import { getJobs } from "~/features/jobs/queries";
 import { getTeams } from "~/features/teams/queries";
+import { makeSsrClient } from "~/supabase-client";
 
 export const meta: MetaFunction = () => {
   return [{ title: "Home | Wemake" }, { name: "Description", content: "Home page" }];
 };
 
 export const loader = async ({ request }: Route.LoaderArgs) => {
-  const products = await getProductsByDateRange({
+  const { client, headers } = makeSsrClient(request);
+  const products = await getProductsByDateRange(client, {
     startDate: DateTime.now().startOf("day"),
     endDate: DateTime.now().endOf("day"),
     limit: 7,
     page: 1,
   });
-  const posts = await getPosts({ limit: 10, sorting: "newest", period: "all" });
-  const gptIdeas = await getGptIdeas({ limit: 10 });
-  const jobs = await getJobs({ limit: 11 });
-  const teams = await getTeams({ limit: 10 });
+  const posts = await getPosts(client, { limit: 10, sorting: "newest", period: "all" });
+  const gptIdeas = await getGptIdeas(client, { limit: 10 });
+  const jobs = await getJobs(client, { limit: 11 });
+  const teams = await getTeams(client, { limit: 10 });
   return { products, posts, gptIdeas, jobs, teams };
 };
 
