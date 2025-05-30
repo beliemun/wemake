@@ -1,7 +1,37 @@
-import client from "~/supabase-client";
+import { redirect } from "react-router";
 import { productListSelect } from "../products/queries";
+import { makeSsrClient } from "~/supabase-client";
 
-export const getUserProfile = async ({ username }: { username: string }) => {
+export const getUserById = async ({ id, request }: { id: string; request: Request }) => {
+  const { client } = makeSsrClient(request);
+  const { data, error } = await client
+    .from("profiles")
+    .select(
+      `
+        profile_id,
+        avatar,
+        name,
+        username
+    `
+    )
+    .eq("profile_id", id)
+    .single();
+  if (error) {
+    // console.log("getUserById error:", error);
+    // throw error;
+    return null;
+  }
+  return data;
+};
+
+export const getUserProfile = async ({
+  username,
+  request,
+}: {
+  username: string;
+  request: Request;
+}) => {
+  const { client } = makeSsrClient(request);
   const { data, error } = await client
     .from("profiles")
     .select(
@@ -24,7 +54,14 @@ export const getUserProfile = async ({ username }: { username: string }) => {
   return data;
 };
 
-export const getUserProducts = async ({ username }: { username: string }) => {
+export const getUserProducts = async ({
+  username,
+  request,
+}: {
+  username: string;
+  request: Request;
+}) => {
+  const { client } = makeSsrClient(request);
   const { data, error } = await client
     .from("products")
     .select(
@@ -42,7 +79,14 @@ export const getUserProducts = async ({ username }: { username: string }) => {
   return data;
 };
 
-export const getUserPosts = async ({ username }: { username: string }) => {
+export const getUserPosts = async ({
+  username,
+  request,
+}: {
+  username: string;
+  request: Request;
+}) => {
+  const { client } = makeSsrClient(request);
   const { data, error } = await client
     .from("community_post_list_view")
     .select("*")

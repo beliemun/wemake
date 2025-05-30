@@ -1,20 +1,37 @@
-import { useParams } from "react-router";
-import { Button } from "~/common/components/ui/button";
+import { redirect } from "react-router";
+import type { Route } from "./+types/otp-start-page";
+import { z } from "zod";
+import { makeSsrClient } from "~/supabase-client";
 
-export default function SocialStartPage() {
-  const { provider } = useParams<{ provider: string }>();
+const paramsSchema = z.object({
+  provider: z.enum(["github", "kakao"]),
+});
 
-  return (
-    <div className="space-y-6">
-      <div className="space-y-2 text-center">
-        <h1 className="text-3xl font-bold">{provider} 로그인</h1>
-        <p className="text-gray-500 dark:text-gray-400">{provider} 계정으로 로그인하세요</p>
-      </div>
-      <div className="space-y-4">
-        <Button className="w-full" type="button">
-          {provider}로 계속하기
-        </Button>
-      </div>
-    </div>
-  );
-}
+export const loader = async ({ request, params }: Route.LoaderArgs) => {
+  const { success, data } = paramsSchema.safeParse(params);
+
+  if (!success) {
+    throw new Error("Invalid params");
+  }
+
+  const { provider } = data;
+  const { client, headers } = makeSsrClient(request);
+  const redirectTo = `http://localhost:5173/auth/social/${provider}/complete`;
+
+  const {
+    data: { url },
+    error,
+  } = await client.auth.signInWithOAuth({
+    provider,
+    options: {
+      redirectTo,
+    },
+  });
+  console.log(url, error);
+  if (url) {
+    return redirect(url, { headers });
+  }
+  if (error) {
+    throw new Error(error.message);
+  }
+};

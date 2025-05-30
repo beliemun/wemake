@@ -1,21 +1,26 @@
-import { useParams } from "react-router";
-import { Button } from "~/common/components/ui/button";
-export default function SocialCompletePage() {
-  const { provider } = useParams<{ provider: string }>();
+import { makeSsrClient } from "~/supabase-client";
+import type { Route } from "./+types/social-complete-page";
+import { z } from "zod";
+import { redirect } from "react-router";
 
-  return (
-    <div className="space-y-6">
-      <div className="space-y-2 text-center">
-        <h1 className="text-3xl font-bold text-foreground">{provider} 로그인 완료</h1>
-        <p className="text-gray-500 dark:text-gray-400">
-          {provider} 계정으로 로그인이 완료되었습니다
-        </p>
-      </div>
-      <div className="space-y-4">
-        <Button className="w-full" type="button">
-          계속하기
-        </Button>
-      </div>
-    </div>
-  );
-}
+const paramsSchema = z.object({
+  provider: z.enum(["github", "kakao"]),
+});
+
+export const loader = async ({ request, params }: Route.LoaderArgs) => {
+  const { success } = paramsSchema.safeParse(params);
+  if (!success) {
+    return redirect("/auth/sign-in");
+  }
+  const url = new URL(request.url);
+  const code = url.searchParams.get("code");
+  if (!code) {
+    return redirect("/auth/sign-in");
+  }
+  const { client, headers } = makeSsrClient(request);
+  const { error } = await client.auth.exchangeCodeForSession(code);
+  if (error) {
+    throw error;
+  }
+  return redirect("/", { headers });
+};

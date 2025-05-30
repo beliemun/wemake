@@ -15,6 +15,7 @@ import Navigation from "./common/components/navigation";
 import { Settings } from "luxon";
 import { cn } from "./lib/utils";
 import { makeSsrClient } from "./supabase-client";
+import { getUserById } from "./features/users/quries";
 
 export const links: Route.LinksFunction = () => [
   { rel: "preconnect", href: "https://fonts.googleapis.com" },
@@ -50,19 +51,25 @@ export function Layout({ children }: { children: React.ReactNode }) {
 }
 
 export const loader = async ({ request }: Route.LoaderArgs) => {
-  const { client, headers } = makeSsrClient(request);
+  const { client } = makeSsrClient(request);
   const {
     data: { user },
   } = await client.auth.getUser();
-
-  return { user };
+  if (user) {
+    const profile = await getUserById({ id: user.id, request });
+    console.log("root profile:", profile);
+    return { user, profile };
+  }
+  console.log("root user:", user);
+  return { user, profile: null };
 };
 
 export default function App({ loaderData }: Route.ComponentProps) {
   const { pathname } = useLocation();
   const navigation = useNavigation();
   const isLoading = navigation.state === "loading";
-  const { user } = loaderData;
+  const { user, profile } = loaderData;
+  console.log("user", user);
   return (
     <main
       className={cn({
@@ -72,7 +79,14 @@ export default function App({ loaderData }: Route.ComponentProps) {
     >
       <div>
         {pathname.includes("/auth") ? null : (
-          <Navigation isSignedIn={!!user} hasNotifications={true} hasMessages={true} />
+          <Navigation
+            isSignedIn={!!user}
+            hasNotifications={true}
+            hasMessages={true}
+            name={profile?.name ?? ""}
+            username={profile?.username ?? ""}
+            avatar={profile?.avatar ?? ""}
+          />
         )}
       </div>
       <div className="flex justify-center">

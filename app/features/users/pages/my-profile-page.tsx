@@ -1,9 +1,7 @@
-import { Form, redirect } from "react-router";
+import { redirect } from "react-router";
 import type { Route } from "./+types/my-profile-page";
-
-export function loader() {
-  return redirect("/users/brian");
-}
+import { makeSsrClient } from "~/supabase-client";
+import { getUserById } from "../quries";
 
 export const meta: Route.MetaFunction = () => {
   return [
@@ -13,6 +11,14 @@ export const meta: Route.MetaFunction = () => {
   ];
 };
 
-export default function MyProfilePage() {
-  return <div></div>;
+export async function loader({ request }: Route.LoaderArgs) {
+  const { client } = makeSsrClient(request);
+  const {
+    data: { user },
+  } = await client.auth.getUser();
+  if (user) {
+    const profile = await getUserById({ id: user.id, request });
+    return redirect(`/users/${profile.username}`);
+  }
+  return redirect("/auth/sign-in");
 }

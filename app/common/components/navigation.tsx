@@ -143,10 +143,16 @@ const Navigation = ({
   isSignedIn,
   hasNotifications,
   hasMessages,
+  name,
+  username,
+  avatar,
 }: {
   isSignedIn: boolean;
   hasNotifications: boolean;
   hasMessages: boolean;
+  name: string;
+  username: string;
+  avatar: string;
 }) => {
   const [isDarkMode, setIsDarkMode] = useState(false);
 
@@ -229,14 +235,14 @@ const Navigation = ({
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <Avatar className="cursor-pointer">
-                  <AvatarImage src="https://github.com/shadcasdasdn.png" />
-                  <AvatarFallback>N</AvatarFallback>
+                  <AvatarImage src={avatar} />
+                  <AvatarFallback>{name.charAt(0)}</AvatarFallback>
                 </Avatar>
               </DropdownMenuTrigger>
               <DropdownMenuContent className="flex flex-col w-64 gap-2">
                 <DropdownMenuLabel className="flex flex-col">
-                  <span className="font-medium">John Doe</span>
-                  <span className="text-xs text-muted-foreground">john.doe@example.com</span>
+                  <span className="font-medium">{name}</span>
+                  <span className="text-xs text-muted-foreground">{username}</span>
                 </DropdownMenuLabel>
                 <Separator />
                 <DropdownMenuGroup className="flex flex-col gap-2">

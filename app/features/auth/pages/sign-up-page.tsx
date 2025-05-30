@@ -31,8 +31,13 @@ export const action = async ({ request }: Route.ActionArgs) => {
   const { data: user, error: signUpError } = await client.auth.signUp({
     email: data.email,
     password: data.password,
+    options: {
+      data: {
+        name: data.name,
+      },
+    },
   });
-  console.log(user, signUpError);
+  console.log("signed up user:", user);
   if (signUpError) {
     return { signUpError: signUpError.message };
   }
