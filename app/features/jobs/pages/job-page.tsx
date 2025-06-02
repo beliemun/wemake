@@ -4,13 +4,15 @@ import type { Route } from "./+types/job-page";
 import { Badge } from "~/common/components/ui/badge";
 import { getJobById } from "../queries";
 import { DateTime } from "luxon";
+import { makeSsrClient } from "~/supabase-client";
 
 export const meta: Route.MetaFunction = () => {
   return [{ title: `구인 상세` }, { name: "description", content: "구인 상세 정보를 확인하세요." }];
 };
 
-export const loader = async ({ params }: Route.LoaderArgs) => {
-  const job = await getJobById(Number(params.jobId));
+export const loader = async ({ params, request }: Route.LoaderArgs) => {
+  const { client } = makeSsrClient(request);
+  const job = await getJobById(client, Number(params.jobId));
   return { job };
 };
 
@@ -68,6 +70,13 @@ export default function JobPage({ loaderData }: Route.ComponentProps) {
               <h2 className="text-xl font-semibold text-foreground mb-3">Benefits</h2>
               <ul className="list-disc list-inside space-y-2 text-muted-foreground">
                 <li>{job.benefits}</li>
+              </ul>
+            </section>
+
+            <section>
+              <h2 className="text-xl font-semibold text-foreground mb-3">Skills</h2>
+              <ul className="list-disc list-inside space-y-2 text-muted-foreground">
+                <li>{job.skills}</li>
               </ul>
             </section>
           </div>

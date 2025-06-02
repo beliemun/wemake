@@ -6,27 +6,29 @@ import { Link } from "react-router";
 import { Separator } from "~/common/components/ui/separator";
 import { getProductsByDateRange } from "../queries";
 import { DateTime } from "luxon";
+import { makeSsrClient } from "~/supabase-client";
 
-export const loader = async () => {
-  const dailyProductsPromise = getProductsByDateRange({
+export const loader = async ({ request }: Route.LoaderArgs) => {
+  const { client } = makeSsrClient(request);
+  const dailyProductsPromise = getProductsByDateRange(client, {
     startDate: DateTime.now().startOf("day"),
     endDate: DateTime.now().endOf("day"),
     limit: 7,
     page: 1,
   });
-  const weeklyProductsPromise = getProductsByDateRange({
+  const weeklyProductsPromise = getProductsByDateRange(client, {
     startDate: DateTime.now().startOf("week"),
     endDate: DateTime.now().endOf("week"),
     limit: 7,
     page: 1,
   });
-  const monthlyProductsPromise = getProductsByDateRange({
+  const monthlyProductsPromise = getProductsByDateRange(client, {
     startDate: DateTime.now().startOf("month"),
     endDate: DateTime.now().endOf("month"),
     limit: 7,
     page: 1,
   });
-  const yearlyProductsPromise = getProductsByDateRange({
+  const yearlyProductsPromise = getProductsByDateRange(client, {
     startDate: DateTime.now().startOf("year"),
     endDate: DateTime.now().endOf("year"),
     limit: 7,

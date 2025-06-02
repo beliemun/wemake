@@ -23,12 +23,16 @@ export const posts = pgTable("posts", {
   upvotes: bigint({ mode: "number" }).default(0),
   created_at: timestamp("created_at").notNull().defaultNow(),
   updated_at: timestamp("updated_at").notNull().defaultNow(),
-  topic_id: bigint("topic_id", { mode: "number" }).references(() => topics.topic_id, {
-    onDelete: "cascade",
-  }),
-  profile_id: uuid("profile_id").references(() => profiles.profile_id, {
-    onDelete: "cascade",
-  }),
+  topic_id: bigint("topic_id", { mode: "number" })
+    .references(() => topics.topic_id, {
+      onDelete: "cascade",
+    })
+    .notNull(),
+  profile_id: uuid("profile_id")
+    .references(() => profiles.profile_id, {
+      onDelete: "cascade",
+    })
+    .notNull(),
 });
 
 export const postUpvotes = pgTable(

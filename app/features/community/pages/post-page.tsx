@@ -15,14 +15,17 @@ import { Badge } from "~/common/components/ui/badge";
 import { Reply } from "../components/comment";
 import { getPostById, getReplies } from "../queries";
 import { DateTime } from "luxon";
+import { makeSsrClient } from "~/supabase-client";
+
 export const meta: Route.MetaFunction = () => [
   { title: "게시글 | WeMake" },
   { name: "description", content: "WeMake 커뮤니티 게시글을 확인해보세요." },
 ];
 
-export const loader = async ({ params }: Route.LoaderArgs) => {
-  const post = await getPostById(Number(params.postId));
-  const replies = await getReplies(Number(params.postId));
+export const loader = async ({ params, request }: Route.LoaderArgs) => {
+  const { client } = makeSsrClient(request);
+  const post = await getPostById(client, Number(params.postId));
+  const replies = await getReplies(client, Number(params.postId));
   return { post, replies };
 };
 

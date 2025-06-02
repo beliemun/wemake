@@ -8,6 +8,7 @@ import { z } from "zod";
 import { getJobs } from "../queries";
 import { DateTime } from "luxon";
 import type { JobType, SalaryRange } from "../types";
+import { makeSsrClient } from "~/supabase-client";
 export const meta: Route.MetaFunction = () => {
   return [{ title: "Jobs | Wemake" }, { name: "description", content: "Browse and post jobs" }];
 };
@@ -19,6 +20,7 @@ const searchParamsSchema = z.object({
 });
 
 export const loader = async ({ request }: Route.LoaderArgs) => {
+  const { client } = makeSsrClient(request);
   const url = new URL(request.url);
   const { success, data: parsedData } = searchParamsSchema.safeParse(
     Object.fromEntries(url.searchParams)
@@ -32,9 +34,9 @@ export const loader = async ({ request }: Route.LoaderArgs) => {
       { status: 400 }
     );
   }
-  const jobs = await getJobs({
+  const jobs = await getJobs(client, {
     limit: 11,
-    location: parsedData.location,
+    location: parsedData.location ?? undefined,
     jobType: parsedData.jobType as JobType,
     salary: parsedData.salary as SalaryRange,
   });

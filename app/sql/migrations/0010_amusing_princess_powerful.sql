@@ -1,0 +1,1 @@
+ALTER TABLE "jobs" ALTER COLUMN "skills" DROP DEFAULT;

@@ -156,7 +156,6 @@ export type Database = {
         Row: {
           apply_url: string
           benefits: string
-          company_id: number
           company_location: string
           company_logo: string
           company_name: string
@@ -169,12 +168,12 @@ export type Database = {
           qualifications: string
           responsibilities: string
           salary_range: Database["public"]["Enums"]["salary_range"]
+          skills: string
           updated_at: string
         }
         Insert: {
           apply_url: string
           benefits: string
-          company_id: number
           company_location: string
           company_logo: string
           company_name: string
@@ -187,12 +186,12 @@ export type Database = {
           qualifications: string
           responsibilities: string
           salary_range: Database["public"]["Enums"]["salary_range"]
+          skills: string
           updated_at?: string
         }
         Update: {
           apply_url?: string
           benefits?: string
-          company_id?: number
           company_location?: string
           company_logo?: string
           company_name?: string
@@ -205,6 +204,7 @@ export type Database = {
           qualifications?: string
           responsibilities?: string
           salary_range?: Database["public"]["Enums"]["salary_range"]
+          skills?: string
           updated_at?: string
         }
         Relationships: []
@@ -497,9 +497,9 @@ export type Database = {
           content: string
           created_at: string
           post_id: number
-          profile_id: string | null
+          profile_id: string
           title: string
-          topic_id: number | null
+          topic_id: number
           updated_at: string
           upvotes: number | null
         }
@@ -507,9 +507,9 @@ export type Database = {
           content: string
           created_at?: string
           post_id?: number
-          profile_id?: string | null
+          profile_id: string
           title: string
-          topic_id?: number | null
+          topic_id: number
           updated_at?: string
           upvotes?: number | null
         }
@@ -517,9 +517,9 @@ export type Database = {
           content?: string
           created_at?: string
           post_id?: number
-          profile_id?: string | null
+          profile_id?: string
           title?: string
-          topic_id?: number | null
+          topic_id?: number
           updated_at?: string
           upvotes?: number | null
         }

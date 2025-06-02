@@ -26,7 +26,7 @@ export default function SelectPair({
         <small className="text-muted-foreground">{description}</small>
       </Label>
       <Select name={name} required={required} open={open} onOpenChange={setOpen}>
-        <SelectTrigger>
+        <SelectTrigger className="w-full">
           <SelectValue placeholder={placeholder} />
         </SelectTrigger>
         <SelectContent>

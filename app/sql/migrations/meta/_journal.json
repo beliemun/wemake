@@ -57,6 +57,41 @@
       "when": 1748236984644,
       "tag": "0007_flippant_hobgoblin",
       "breakpoints": true
+    },
+    {
+      "idx": 8,
+      "version": "7",
+      "when": 1748842088851,
+      "tag": "0008_fast_rocket_racer",
+      "breakpoints": true
+    },
+    {
+      "idx": 9,
+      "version": "7",
+      "when": 1748842441579,
+      "tag": "0009_fancy_carlie_cooper",
+      "breakpoints": true
+    },
+    {
+      "idx": 10,
+      "version": "7",
+      "when": 1748842477701,
+      "tag": "0010_amusing_princess_powerful",
+      "breakpoints": true
+    },
+    {
+      "idx": 11,
+      "version": "7",
+      "when": 1748843015489,
+      "tag": "0011_chubby_tarot",
+      "breakpoints": true
+    },
+    {
+      "idx": 12,
+      "version": "7",
+      "when": 1748844764541,
+      "tag": "0012_fresh_barracuda",
+      "breakpoints": true
     }
   ]
 }

@@ -1,6 +1,7 @@
 import { redirect } from "react-router";
 import { productListSelect } from "../products/queries";
-import { makeSsrClient } from "~/supabase-client";
+import { makeSsrClient, type Database } from "~/supabase-client";
+import type { SupabaseClient } from "@supabase/supabase-js";
 
 export const getUserById = async ({ id, request }: { id: string; request: Request }) => {
   const { client } = makeSsrClient(request);
@@ -95,4 +96,12 @@ export const getUserPosts = async ({
     throw error;
   }
   return data;
+};
+
+export const isSignedInUserId = async (client: SupabaseClient<Database>) => {
+  const { data, error } = await client.auth.getUser();
+  if (error || data.user === null) {
+    throw redirect("/auth/sign-in");
+  }
+  return data.user.id;
 };

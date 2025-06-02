@@ -1,0 +1,1 @@
+ALTER TABLE "jobs" ALTER COLUMN "skills" SET NOT NULL;

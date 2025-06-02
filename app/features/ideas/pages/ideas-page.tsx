@@ -2,12 +2,14 @@ import { Hero } from "~/common/components/hero";
 import type { Route } from "./+types/ideas-page";
 import { IdeaCard } from "../components";
 import { getGptIdeas } from "../queries";
+import { makeSsrClient } from "~/supabase-client";
 export const meta: Route.MetaFunction = () => {
   return [{ title: "Ideas | Wemake" }, { name: "description", content: "Browse and share ideas" }];
 };
 
-export const loader = async () => {
-  const gptIdeas = await getGptIdeas({ limit: 20 });
+export const loader = async ({ request }: Route.LoaderArgs) => {
+  const { client } = makeSsrClient(request);
+  const gptIdeas = await getGptIdeas(client, { limit: 20 });
   return { gptIdeas };
 };
 
