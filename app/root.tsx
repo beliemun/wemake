@@ -57,10 +57,8 @@ export const loader = async ({ request }: Route.LoaderArgs) => {
   } = await client.auth.getUser();
   if (user) {
     const profile = await getUserById({ id: user.id, request });
-    console.log("root profile:", profile);
     return { user, profile };
   }
-  console.log("root user:", user);
   return { user, profile: null };
 };
 
@@ -69,7 +67,7 @@ export default function App({ loaderData }: Route.ComponentProps) {
   const navigation = useNavigation();
   const isLoading = navigation.state === "loading";
   const { user, profile } = loaderData;
-  console.log("user", user);
+
   return (
     <main
       className={cn({

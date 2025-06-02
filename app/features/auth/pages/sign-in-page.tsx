@@ -99,7 +99,7 @@ export default function SignInPage({ actionData }: Route.ComponentProps) {
         <Button className="w-full" variant="secondary" asChild>
           <Link to="/auth/otp/start">
             <IoLockClosed fill="currentColor" />
-            로그인
+            OTP 로그인
           </Link>
         </Button>
       </Form>
