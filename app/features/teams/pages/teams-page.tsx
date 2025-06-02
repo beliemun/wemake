@@ -1,7 +1,6 @@
 import { Hero } from "~/common/components/hero";
 import { TeamCard } from "..";
 import type { Route } from "./+types/teams-page";
-import { getTeamById, getTeams } from "../queries";
 export const meta: Route.MetaFunction = () => {
   return [{ title: "팀 목록 | WeMake" }, { description: "WeMake의 모든 팀을 확인하세요." }];
 };

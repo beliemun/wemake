@@ -98,7 +98,7 @@ export const getUserPosts = async ({
   return data;
 };
 
-export const isSignedInUserId = async (client: SupabaseClient<Database>) => {
+export const getSignedInUserId = async (client: SupabaseClient<Database>) => {
   const { data, error } = await client.auth.getUser();
   if (error || data.user === null) {
     throw redirect("/auth/sign-in");

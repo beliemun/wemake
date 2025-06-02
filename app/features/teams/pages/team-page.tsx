@@ -8,13 +8,15 @@ import { Card, CardContent, CardHeader, CardTitle } from "~/common/components/ui
 import { Separator } from "~/common/components/ui/separator";
 import { getTeamById } from "../queries";
 import type { Route } from "./+types/team-page";
+import { makeSsrClient } from "~/supabase-client";
 
 export const meta = () => {
   return [{ title: "팀 상세 | WeMake" }, { description: "팀의 상세 정보를 확인하세요." }];
 };
 
-export const loader = async ({ params }: Route.LoaderArgs) => {
-  const team = await getTeamById(Number(params.teamId));
+export const loader = async ({ params, request }: Route.LoaderArgs) => {
+  const { client } = makeSsrClient(request);
+  const team = await getTeamById(client, Number(params.teamId));
   return { team };
 };
 

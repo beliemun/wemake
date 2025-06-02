@@ -4,7 +4,7 @@ import { Form, redirect, useNavigation } from "react-router";
 import InputPair from "~/common/components/input-pair";
 import SelectPair from "~/common/components/select-pair";
 import { Button } from "~/common/components/ui/button";
-import { isSignedInUserId } from "~/features/users/quries";
+import { getSignedInUserId } from "~/features/users/quries";
 import { getTopics } from "~/features/community/queries";
 import { makeSsrClient } from "~/supabase-client";
 import { z } from "zod";
@@ -24,7 +24,7 @@ const formSchema = z.object({
 
 export const action = async ({ request }: Route.ActionArgs) => {
   const { client } = makeSsrClient(request);
-  const userId = await isSignedInUserId(client);
+  const userId = await getSignedInUserId(client);
   const formData = await request.formData();
 
   // parse는 에러를 던지고, safeParse는 성공여부를 반환한다.
@@ -40,7 +40,7 @@ export const action = async ({ request }: Route.ActionArgs) => {
 
 export const loader = async ({ request }: Route.LoaderArgs) => {
   const { client } = makeSsrClient(request);
-  const userId = await isSignedInUserId(client);
+  const userId = await getSignedInUserId(client);
   const topics = await getTopics(client);
   return { userId, topics };
 };
