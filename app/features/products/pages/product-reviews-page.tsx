@@ -4,6 +4,7 @@ import type { Route } from "./+types/product-reviews-page";
 import { Dialog, DialogTrigger } from "~/common/components/ui/dialog";
 import { useLoaderData, useOutletContext } from "react-router";
 import { getReviewsByProductId } from "../queries";
+import { makeSsrClient } from "~/supabase-client";
 
 export function meta() {
   return [
@@ -12,9 +13,10 @@ export function meta() {
   ];
 }
 
-export const loader = async ({ params }: Route.LoaderArgs) => {
+export const loader = async ({ params, request }: Route.LoaderArgs) => {
   const { productId } = params;
-  const reviews = await getReviewsByProductId(Number(productId));
+  const { client } = makeSsrClient(request);
+  const reviews = await getReviewsByProductId(client, Number(productId));
   return { reviews };
 };
 

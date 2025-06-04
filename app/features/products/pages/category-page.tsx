@@ -5,6 +5,7 @@ import { ProductCard } from "../components";
 import { z } from "zod";
 import { data } from "react-router";
 import { getCategory, getCategoryPages, getProductsByCategory } from "../queries";
+import { makeSsrClient } from "~/supabase-client";
 export const meta: Route.MetaFunction = () => [
   { title: "Developer Tools | ProductHunt Clone" },
   { name: "description", content: "Tools for developers building with Wemake." },
@@ -39,12 +40,13 @@ export const loader = async ({ params, request }: Route.LoaderArgs) => {
     });
   }
 
-  const category = await getCategory(parsedData.category);
-  const products = await getProductsByCategory({
+  const { client } = makeSsrClient(request);
+  const category = await getCategory(client, parsedData.category);
+  const products = await getProductsByCategory(client, {
     categoryId: parsedData.category,
     page: parsedSearchParams.page,
   });
-  const pages = await getCategoryPages(parsedData.category);
+  const pages = await getCategoryPages(client, parsedData.category);
   return {
     category,
     products,

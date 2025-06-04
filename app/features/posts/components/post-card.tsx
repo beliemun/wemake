@@ -39,7 +39,7 @@ export function PostCard({
             <CardTitle className="text-2xl font-bold">{title}</CardTitle>
             <div className="flex items-center gap-2">
               <p className="text-sm text-muted-foreground">{author}</p>
-              <p className="text-sm text-muted-foreground">{content}</p>
+              <p className="text-sm text-muted-foreground">{content.slice(0, 100)}...</p>
               <p className="text-sm text-muted-foreground">{DateTime.fromISO(date).toRelative()}</p>
             </div>
           </div>

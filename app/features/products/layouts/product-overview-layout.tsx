@@ -6,6 +6,7 @@ import type { Route } from "./+types/product-overview-layout";
 import { cn } from "~/lib/utils";
 import { getProductById } from "../queries";
 import { z } from "zod";
+import { makeSsrClient } from "~/supabase-client";
 
 export function meta() {
   return [
@@ -18,9 +19,10 @@ const paramsSchema = z.object({
   productId: z.coerce.number(),
 });
 
-export const loader = async ({ params }: Route.LoaderArgs) => {
+export const loader = async ({ params, request }: Route.LoaderArgs) => {
   const parsedParams = paramsSchema.parse(params);
-  const product = await getProductById(parsedParams.productId);
+  const { client } = makeSsrClient(request);
+  const product = await getProductById(client, parsedParams.productId);
   return { product };
 };
 

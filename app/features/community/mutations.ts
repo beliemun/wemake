@@ -35,3 +35,29 @@ export const createPost = async (
   }
   return data;
 };
+
+export const createReply = async (
+  client: SupabaseClient<Database>,
+  {
+    reply,
+    postId,
+    userId,
+    parentId,
+  }: { reply: string; postId: number; userId: string; parentId?: number }
+) => {
+  console.log(1, reply, postId, parentId);
+  const { data, error } = await client
+    .from("post_replies")
+    .insert({
+      ...(parentId ? { parent_id: parentId } : { post_id: postId }),
+      reply,
+      profile_id: userId,
+    })
+    .select()
+    .single();
+  console.log(2, data);
+  if (error) {
+    throw error;
+  }
+  return data;
+};

@@ -1,8 +1,9 @@
 import { redirect } from "react-router";
 import type { Route } from "./+types/product-visit-page";
-import client from "~/supabase-client";
+import { makeSsrClient } from "~/supabase-client";
 
-export const loader = async ({ params }: Route.LoaderArgs) => {
+export const loader = async ({ params, request }: Route.LoaderArgs) => {
+  const { client } = makeSsrClient(request);
   const { data, error } = await client
     .from("products")
     .select("url")

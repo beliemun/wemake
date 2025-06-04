@@ -67,11 +67,12 @@ export default function App({ loaderData }: Route.ComponentProps) {
   const navigation = useNavigation();
   const isLoading = navigation.state === "loading";
   const { user, profile } = loaderData;
+  const isSignedIn = !!user;
 
   return (
     <main
       className={cn({
-        "pt-16": !pathname.includes("/auth"),
+        "pt-16": !pathname.includes("/aut h"),
         "transition-opacity animate-pulse": isLoading,
       })}
     >
@@ -94,7 +95,14 @@ export default function App({ loaderData }: Route.ComponentProps) {
             pathname.includes("/auth") ? "" : "px-20 py-10"
           )}
         >
-          <Outlet />
+          <Outlet
+            context={{
+              isSignedIn,
+              name: profile?.name,
+              username: profile?.username,
+              avatar: profile?.avatar,
+            }}
+          />
         </div>
       </div>
     </main>

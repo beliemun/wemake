@@ -1,4 +1,4 @@
-import { Form, Link } from "react-router";
+import { Form, Link, redirect, useOutletContext } from "react-router";
 import type { Route } from "./+types/post-page";
 import {
   Breadcrumb,
@@ -9,13 +9,17 @@ import {
 } from "~/common/components/ui/breadcrumb";
 import { ChevronUp, DotIcon } from "lucide-react";
 import { Button } from "~/common/components/ui/button";
-import { Textarea } from "~/common/components/ui/textarea";
 import { Avatar, AvatarFallback, AvatarImage } from "~/common/components/ui/avatar";
 import { Badge } from "~/common/components/ui/badge";
-import { Reply } from "../components/comment";
+import { Reply } from "../components/reply";
 import { getPostById, getReplies } from "../queries";
 import { DateTime } from "luxon";
 import { makeSsrClient } from "~/supabase-client";
+import { Textarea } from "~/common/components/ui/textarea";
+import { z } from "zod";
+import { createReply } from "../mutations";
+import { getSignedInUserId } from "~/features/users/quries";
+import { useEffect, useRef } from "react";
 
 export const meta: Route.MetaFunction = () => [
   { title: "게시글 | WeMake" },
@@ -26,10 +30,51 @@ export const loader = async ({ params, request }: Route.LoaderArgs) => {
   const { client } = makeSsrClient(request);
   const post = await getPostById(client, Number(params.postId));
   const replies = await getReplies(client, Number(params.postId));
+  console.log("replies", replies);
   return { post, replies };
 };
 
-export default function PostPage({ loaderData }: Route.ComponentProps) {
+const formSchema = z.object({
+  reply: z.string().min(1, "댓글을 입력해주세요."),
+  parent_id: z.coerce.number().optional(),
+});
+
+export const action = async ({ request, params }: Route.ActionArgs) => {
+  const { client } = makeSsrClient(request);
+  const formData = await request.formData();
+  console.log("formData", formData);
+  const userId = await getSignedInUserId(client);
+  const { success, data, error } = formSchema.safeParse(Object.fromEntries(formData));
+  console.log("data", data);
+  if (!success) {
+    return { fieldErrors: error.flatten().fieldErrors };
+  }
+  const { reply, parent_id } = data;
+  await createReply(client, {
+    reply,
+    postId: Number(params.postId),
+    userId,
+    parentId: parent_id,
+  });
+  return { success: true };
+};
+
+export default function PostPage({ loaderData, actionData }: Route.ComponentProps) {
+  const { isSignedIn, name, username, avatar } = useOutletContext<{
+    isSignedIn: boolean;
+    name?: string;
+    username?: string;
+    avatar?: string;
+  }>();
+  const formRef = useRef<HTMLFormElement>(null);
+
+  useEffect(() => {
+    if (actionData?.success) {
+      formRef.current?.reset();
+      formRef.current?.scrollIntoView({ behavior: "smooth" });
+    }
+  }, [actionData, formRef]);
+
   return (
     <main className="flex flex-col gap-10">
       <Breadcrumb>
@@ -84,22 +129,25 @@ export default function PostPage({ loaderData }: Route.ComponentProps) {
                 <p className="text-sm text-muted-foreground mt-6">{loaderData.post.content}</p>
               </div>
               <div className="w-xl">
-                <Form className="flex gap-6">
-                  <Avatar className="w-10 h-10">
-                    <AvatarFallback>{loaderData.post.author_name.slice(0, 2)}</AvatarFallback>
-                    <AvatarImage src={loaderData.post.author_avatar} />
-                  </Avatar>
-                  <div className="flex flex-col items-end gap-6 w-full">
-                    <Textarea
-                      placeholder="댓글을 입력해주세요."
-                      rows={4}
-                      className="w-full resize-none"
-                    />
-                    <Button type="submit" className="cursor-pointer">
-                      댓글 작성
-                    </Button>
-                  </div>
-                </Form>
+                {isSignedIn ? (
+                  <Form ref={formRef} className="flex gap-6" method="post">
+                    <Avatar className="w-10 h-10">
+                      <AvatarFallback>{loaderData.post.author_name.slice(0, 2)}</AvatarFallback>
+                      <AvatarImage src={loaderData.post.author_avatar} />
+                    </Avatar>
+                    <div className="flex flex-col items-end gap-6 w-full">
+                      <Textarea
+                        name="reply"
+                        className="w-full resize-none"
+                        placeholder="댓글을 입력해주세요."
+                        rows={4}
+                      />
+                      <Button type="submit" className="cursor-pointer">
+                        댓글 작성
+                      </Button>
+                    </div>
+                  </Form>
+                ) : null}
                 <div className="flex flex-col gap-4">
                   <h4 className="text-sm font-bold text-muted-foreground">
                     {loaderData.post.reply_count} Replies
@@ -107,11 +155,13 @@ export default function PostPage({ loaderData }: Route.ComponentProps) {
                   {Array.from({ length: loaderData.post.reply_count }).map((_, index) => (
                     <Reply
                       key={index}
+                      name={loaderData.replies[index].user?.name}
                       authorName={loaderData.post.author_name}
                       authorAvatar={loaderData.post.author_avatar}
                       timestamp={DateTime.fromISO(loaderData.post.created_at).toRelative()}
                       content={loaderData.replies[index].reply}
                       topLevel={true}
+                      parentId={loaderData.replies[index].reply_id}
                       replies={loaderData.replies[index].post_replies.map((reply) => ({
                         ...reply,
                         user: reply.user as { name: string; avatar: string; username: string },
@@ -145,7 +195,7 @@ export default function PostPage({ loaderData }: Route.ComponentProps) {
                 🚀 Launched {loaderData.post.products} products
               </p>
             </div>
-            <Button variant="outline" className="w-full">
+            <Button variant="outline" className="w-full cursor-pointer">
               Follow
             </Button>
           </div>

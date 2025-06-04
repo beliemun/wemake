@@ -115,6 +115,7 @@ export const getReplies = async (client: SupabaseClient<Database>, postId: numbe
   const replyQuery = `
     reply_id,
     reply,
+    parent_id,
     created_at,
     user:profiles(
       name,
