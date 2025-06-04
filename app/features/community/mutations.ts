@@ -45,7 +45,6 @@ export const createReply = async (
     parentId,
   }: { reply: string; postId: number; userId: string; parentId?: number }
 ) => {
-  console.log(1, reply, postId, parentId);
   const { data, error } = await client
     .from("post_replies")
     .insert({
@@ -55,7 +54,7 @@ export const createReply = async (
     })
     .select()
     .single();
-  console.log(2, data);
+
   if (error) {
     throw error;
   }

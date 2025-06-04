@@ -27,7 +27,7 @@ export const loader = async ({ request, params }: Route.LoaderArgs) => {
       redirectTo,
     },
   });
-  console.log(url, error);
+
   if (url) {
     return redirect(url, { headers });
   }

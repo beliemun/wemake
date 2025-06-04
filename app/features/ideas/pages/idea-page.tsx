@@ -4,6 +4,10 @@ import type { Route } from "./+types/idea-page";
 import { Button } from "~/common/components/ui/button";
 import { getGptIdea } from "../queries";
 import { DateTime } from "luxon";
+import { makeSsrClient } from "~/supabase-client";
+import { Form, redirect } from "react-router";
+import { claimIdea } from "../mutations";
+import { getSignedInUserId } from "~/features/users/quries";
 
 export const meta = ({ data: { idea } }: Route.MetaArgs) => {
   return [
@@ -12,22 +16,35 @@ export const meta = ({ data: { idea } }: Route.MetaArgs) => {
   ];
 };
 
-export const loader = async ({ params }: Route.LoaderArgs) => {
-  const idea = await getGptIdea({ gpt_idea_id: params.ideaId });
+export const loader = async ({ params, request }: Route.LoaderArgs) => {
+  console.log("check");
+  const { client } = makeSsrClient(request);
+  const idea = await getGptIdea(client, { gpt_idea_id: params.ideaId });
+
+  if (idea.is_claimed) {
+    return redirect(`/my/dashboard/ideas`);
+  }
   return { idea };
+};
+
+export const action = async ({ params, request }: Route.ActionArgs) => {
+  const { client } = makeSsrClient(request);
+  const userId = await getSignedInUserId(client);
+  const idea = await getGptIdea(client, { gpt_idea_id: params.ideaId });
+  if (idea.is_claimed) {
+    return {
+      success: false,
+    };
+  }
+  await claimIdea(client, { ideaId: params.ideaId, userid: userId });
+  return redirect(`/my/dashboard/ideas`);
 };
 
 export default function IdeaPage({ loaderData }: Route.ComponentProps) {
   return (
     <main className="flex flex-col px-4 py-8 gap-8">
       <div className="flex flex-col gap-4">
-        <h1 className="text-2xl font-bold">Idea {loaderData.idea.idea}</h1>
-        <p className="text-sm text-muted-foreground">
-          Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, quos. Lorem ipsum dolor
-          sit amet consectetur adipisicing elit. Quisquam, quos. Lorem ipsum dolor sit amet
-          consectetur adipisicing elit. Quisquam, quos. Lorem ipsum dolor sit amet consectetur
-          adipisicing elit. Quisquam, quos.
-        </p>
+        <h1 className="text-2xl font-bold">{loaderData.idea.idea}</h1>
         <div className="flex items-center gap-2">
           <div className="flex items-center gap-2">
             <EyeIcon className="size-4" />
@@ -40,9 +57,13 @@ export default function IdeaPage({ loaderData }: Route.ComponentProps) {
             <span>{loaderData.idea.likes}</span>
           </Button>
         </div>
-        <Button className="w-fit cursor-pointer" variant="default">
-          Claim idea now &rarr;
-        </Button>
+        {loaderData.idea.is_claimed ? null : (
+          <Form method="post">
+            <Button className="w-fit cursor-pointer" variant="default">
+              Claim idea now &rarr;
+            </Button>
+          </Form>
+        )}
       </div>
     </main>
   );

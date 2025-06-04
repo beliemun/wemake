@@ -38,7 +38,6 @@ export function Reply({
   replies,
   parentId,
 }: ReplyProps) {
-  console.log("name", name);
   // useActionData는 가장 최근의 Post Navigation from 제출의 actionData를 가져온다. action 타입은 페이지에서 정의한 action 함수의 반환 타입이다.
   const actionData = useActionData<typeof action>();
   const [replying, setReplying] = useState(false);

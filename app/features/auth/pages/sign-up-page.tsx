@@ -37,7 +37,6 @@ export const action = async ({ request }: Route.ActionArgs) => {
       },
     },
   });
-  console.log("signed up user:", user);
   if (signUpError) {
     return { signUpError: signUpError.message };
   }

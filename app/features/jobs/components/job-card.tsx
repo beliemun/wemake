@@ -34,7 +34,7 @@ export function JobCard({
             <span className="text-sm text-muted-foreground">{postedDate}</span>
           </div>
         </div>
-        <CardTitle className="text-xl">{title}</CardTitle>
+        {/* <CardTitle className="text-xl">{title}</CardTitle> */}
       </CardHeader>
       <CardContent className="flex flex-wrap gap-2">
         {badges.map((badge) => (

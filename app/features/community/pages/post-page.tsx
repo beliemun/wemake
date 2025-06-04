@@ -30,7 +30,6 @@ export const loader = async ({ params, request }: Route.LoaderArgs) => {
   const { client } = makeSsrClient(request);
   const post = await getPostById(client, Number(params.postId));
   const replies = await getReplies(client, Number(params.postId));
-  console.log("replies", replies);
   return { post, replies };
 };
 
@@ -42,10 +41,8 @@ const formSchema = z.object({
 export const action = async ({ request, params }: Route.ActionArgs) => {
   const { client } = makeSsrClient(request);
   const formData = await request.formData();
-  console.log("formData", formData);
   const userId = await getSignedInUserId(client);
   const { success, data, error } = formSchema.safeParse(Object.fromEntries(formData));
-  console.log("data", data);
   if (!success) {
     return { fieldErrors: error.flatten().fieldErrors };
   }

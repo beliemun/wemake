@@ -37,7 +37,6 @@ export const action = async ({ request }: Route.ActionArgs) => {
   const data = Object.fromEntries(formData);
   const { success, error, data: parsedData } = formSchema.safeParse(data);
   if (!success) {
-    console.log(error.flatten().fieldErrors);
     return {
       fieldErrors: error.flatten().fieldErrors,
     };

@@ -30,9 +30,6 @@ export const action = async ({ request }: Route.ActionArgs) => {
   if (error) {
     return { error: "Failed to send OTP" };
   }
-  if (user) {
-    console.log("user", user);
-  }
 
   return redirect(`/auth/otp/complete?email=${email}`);
 };

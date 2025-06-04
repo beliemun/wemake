@@ -1,6 +1,9 @@
 import { Card } from "~/common/components/ui/card";
 import type { Route } from "./+types/dashboard-ideas-page";
 import { IdeaCard } from "~/features/ideas/components/idea-card";
+import { makeSsrClient } from "~/supabase-client";
+import { getSignedInUserId } from "../quries";
+import { getClaimedIdeas, getGptIdeas } from "~/features/ideas/queries";
 
 export const meta: Route.MetaFunction = () => {
   return [
@@ -10,19 +13,26 @@ export const meta: Route.MetaFunction = () => {
   ];
 };
 
-export default function DashboardIdeasPage() {
+export const loader = async ({ request }: Route.LoaderArgs) => {
+  const { client } = makeSsrClient(request);
+  const userId = await getSignedInUserId(client);
+  const ideas = await getClaimedIdeas(client, { limit: 10, userId });
+  return { ideas };
+};
+
+export default function DashboardIdeasPage({ loaderData }: Route.ComponentProps) {
   return (
     <div className="space-y-20">
       <h1 className="text-2xl font-bold text-foreground">아이디어 페이지</h1>
       <div className="grid grid-cols-3 gap-4">
-        {Array.from({ length: 10 }).map((_, index) => (
+        {loaderData.ideas.map((idea) => (
           <IdeaCard
-            key={index}
-            ideaId={index.toString()}
-            content="A startup is a company that is created to start a new business. It is a company that is created to start a new business. It is a company that is created to start a new business."
-            viewCount={0}
+            key={idea.gpt_idea_id}
+            ideaId={idea.gpt_idea_id.toString()}
+            content={idea.idea}
+            viewCount={idea.views}
             date={new Date().toISOString().split("T")[0]}
-            likeCount={0}
+            owner={true}
           />
         ))}
       </div>
