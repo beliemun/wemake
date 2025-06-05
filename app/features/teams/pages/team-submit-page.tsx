@@ -5,7 +5,7 @@ import SelectPair from "~/common/components/select-pair";
 import { Button } from "~/common/components/ui/button";
 import { PRODUCT_STAGE } from "../constants";
 import { makeSsrClient } from "~/supabase-client";
-import { getSignedInUserId } from "~/features/users/quries";
+import { getSignedInUserId } from "~/features/users/queries";
 import type { Route } from "./+types/team-submit-page";
 import { z } from "zod";
 import { createTeam } from "../mutations";

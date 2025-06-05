@@ -6,15 +6,9 @@ import { ChartTooltipContent } from "~/common/components/ui/chart";
 import { Line } from "recharts";
 import { ChartContainer } from "~/common/components/ui/chart";
 import { LineChart } from "recharts";
+import { makeSsrClient } from "~/supabase-client";
+import { getSignedInUserId } from "../queries";
 
-const chartData = [
-  { month: "January", views: 186 },
-  { month: "February", views: 305 },
-  { month: "March", views: 237 },
-  { month: "April", views: 73 },
-  { month: "May", views: 209 },
-  { month: "June", views: 214 },
-];
 const chartConfig = {
   views: {
     label: "views",
@@ -30,7 +24,19 @@ export const meta: Route.MetaFunction = () => {
   ];
 };
 
-export default function DashboardPage() {
+export const loader = async ({ request }: Route.LoaderArgs) => {
+  const { client } = makeSsrClient(request);
+  const userId = await getSignedInUserId(client);
+  const { data, error } = await client.rpc("get_dashboard_stats", { user_id: userId });
+  if (error) {
+    throw error;
+  }
+  return { chartData: data };
+};
+
+export default function DashboardPage({ loaderData }: Route.ComponentProps) {
+  const { chartData } = loaderData;
+  console.log("chartData", chartData);
   return (
     <div className="space-y-20">
       <h1 className="text-2xl font-bold text-foreground">대시보드 페이지</h1>
@@ -54,7 +60,7 @@ export default function DashboardPage() {
                 tickLine={false}
                 axisLine={false}
                 tickMargin={8}
-                tickFormatter={(value) => value.slice(0, 3)}
+                padding={{ left: 15, right: 15 }}
               />
               <ChartTooltip cursor={false} content={<ChartTooltipContent hideLabel />} />
               <Line

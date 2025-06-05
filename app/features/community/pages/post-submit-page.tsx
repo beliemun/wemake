@@ -4,7 +4,7 @@ import { Form, redirect, useNavigation } from "react-router";
 import InputPair from "~/common/components/input-pair";
 import SelectPair from "~/common/components/select-pair";
 import { Button } from "~/common/components/ui/button";
-import { getSignedInUserId } from "~/features/users/quries";
+import { getSignedInUserId } from "~/features/users/queries";
 import { getTopics } from "~/features/community/queries";
 import { makeSsrClient } from "~/supabase-client";
 import { z } from "zod";

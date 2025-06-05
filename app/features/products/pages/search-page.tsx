@@ -7,6 +7,7 @@ import { data, Form } from "react-router";
 import { Input } from "~/common/components/ui/input";
 import { Button } from "~/common/components/ui/button";
 import { getPagesBySearch, getProductBySearch } from "../queries";
+import { makeSsrClient } from "~/supabase-client";
 
 const searchParams = z.object({
   query: z.string().optional().default(""),
@@ -22,8 +23,12 @@ export async function loader({ request }: Route.LoaderArgs) {
   if (parseData.query === "") {
     return { products: [], totalPages: 1 };
   }
-  const products = await getProductBySearch({ query: parseData.query, page: parseData.page });
-  const totalPages = await getPagesBySearch({ query: parseData.query });
+  const { client } = makeSsrClient(request);
+  const products = await getProductBySearch(client, {
+    query: parseData.query,
+    page: parseData.page,
+  });
+  const totalPages = await getPagesBySearch(client, { query: parseData.query });
   return { products, totalPages };
 }
 

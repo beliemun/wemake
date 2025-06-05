@@ -25,14 +25,10 @@ export const getUserById = async ({ id, request }: { id: string; request: Reques
   return data;
 };
 
-export const getUserProfile = async ({
-  username,
-  request,
-}: {
-  username: string;
-  request: Request;
-}) => {
-  const { client } = makeSsrClient(request);
+export const getUserProfile = async (
+  client: SupabaseClient<Database>,
+  { username }: { username: string }
+) => {
   const { data, error } = await client
     .from("profiles")
     .select(
@@ -55,14 +51,10 @@ export const getUserProfile = async ({
   return data;
 };
 
-export const getUserProducts = async ({
-  username,
-  request,
-}: {
-  username: string;
-  request: Request;
-}) => {
-  const { client } = makeSsrClient(request);
+export const getUserProducts = async (
+  client: SupabaseClient<Database>,
+  { username }: { username: string }
+) => {
   const { data, error } = await client
     .from("products")
     .select(
@@ -80,14 +72,10 @@ export const getUserProducts = async ({
   return data;
 };
 
-export const getUserPosts = async ({
-  username,
-  request,
-}: {
-  username: string;
-  request: Request;
-}) => {
-  const { client } = makeSsrClient(request);
+export const getUserPosts = async (
+  client: SupabaseClient<Database>,
+  { username }: { username: string }
+) => {
   const { data, error } = await client
     .from("community_post_list_view")
     .select("*")
@@ -104,4 +92,22 @@ export const getSignedInUserId = async (client: SupabaseClient<Database>) => {
     throw redirect("/auth/sign-in");
   }
   return data.user.id;
+};
+
+export const getProductsByUserId = async (
+  client: SupabaseClient<Database>,
+  { userId }: { userId: string }
+) => {
+  const { data, error } = await client
+    .from("products")
+    .select(
+      `
+        name, product_id
+    `
+    )
+    .eq("profile_id", userId);
+  if (error) {
+    throw error;
+  }
+  return data;
 };

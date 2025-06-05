@@ -7,7 +7,7 @@ import { DateTime } from "luxon";
 import { makeSsrClient } from "~/supabase-client";
 import { Form, redirect } from "react-router";
 import { claimIdea } from "../mutations";
-import { getSignedInUserId } from "~/features/users/quries";
+import { getSignedInUserId } from "~/features/users/queries";
 
 export const meta = ({ data: { idea } }: Route.MetaArgs) => {
   return [

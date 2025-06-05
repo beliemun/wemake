@@ -14,11 +14,13 @@ import {
 import { Textarea } from "~/common/components/ui/textarea";
 import { cn } from "~/lib/utils";
 import type { Route } from "./+types/profile-layout";
-import { getUserProfile } from "../quries";
+import { getUserProfile } from "../queries";
+import { makeSsrClient } from "~/supabase-client";
 
-export const loader = async ({ params }: Route.LoaderArgs) => {
+export const loader = async ({ params, request }: Route.LoaderArgs) => {
   const { username } = params;
-  const user = await getUserProfile({ username: username as string });
+  const { client } = makeSsrClient(request);
+  const user = await getUserProfile(client, { username: username as string });
   return { user };
 };
 

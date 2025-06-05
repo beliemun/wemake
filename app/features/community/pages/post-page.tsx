@@ -18,7 +18,7 @@ import { makeSsrClient } from "~/supabase-client";
 import { Textarea } from "~/common/components/ui/textarea";
 import { z } from "zod";
 import { createReply } from "../mutations";
-import { getSignedInUserId } from "~/features/users/quries";
+import { getSignedInUserId } from "~/features/users/queries";
 import { useEffect, useRef } from "react";
 
 export const meta: Route.MetaFunction = () => [

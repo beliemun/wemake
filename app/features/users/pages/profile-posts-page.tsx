@@ -1,14 +1,16 @@
 import { PostCard } from "~/features/posts/components/post-card";
 import type { Route } from "./+types/profile-posts-page";
-import { getUserPosts } from "../quries";
+import { getUserPosts } from "../queries";
+import { makeSsrClient } from "~/supabase-client";
 
 export const meta: Route.MetaFunction = () => {
   return [{ title: "포스트 | WeMake" }];
 };
 
-export const loader = async ({ params }: Route.LoaderArgs) => {
+export const loader = async ({ params, request }: Route.LoaderArgs) => {
   const { username } = params;
-  const posts = await getUserPosts({ username: username as string });
+  const { client } = makeSsrClient(request);
+  const posts = await getUserPosts(client, { username: username as string });
   return { posts };
 };
 

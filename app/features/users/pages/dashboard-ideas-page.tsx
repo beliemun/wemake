@@ -2,7 +2,7 @@ import { Card } from "~/common/components/ui/card";
 import type { Route } from "./+types/dashboard-ideas-page";
 import { IdeaCard } from "~/features/ideas/components/idea-card";
 import { makeSsrClient } from "~/supabase-client";
-import { getSignedInUserId } from "../quries";
+import { getSignedInUserId } from "../queries";
 import { getClaimedIdeas, getGptIdeas } from "~/features/ideas/queries";
 
 export const meta: Route.MetaFunction = () => {
