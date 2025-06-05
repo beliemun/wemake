@@ -8,7 +8,7 @@ import { makeSsrClient } from "~/supabase-client";
 import { getSignedInUserId, getUserById } from "../queries";
 import { roles } from "../schema";
 import { z } from "zod";
-import { updateUser } from "../mutations";
+import { updateUser, updateUserAvatar } from "../mutations";
 import { Alert, AlertDescription, AlertTitle } from "~/common/components/ui/alert";
 
 export const meta: Route.MetaFunction = () => {
@@ -24,25 +24,50 @@ const formSchema = z.object({
   role: z.string().min(1),
   headline: z.string().min(1),
   bio: z.string().min(1),
+  avatar: z.instanceof(File),
 });
 
 export const action = async ({ request }: Route.ActionArgs) => {
   const { client } = makeSsrClient(request);
   const userId = await getSignedInUserId(client);
   const formData = await request.formData();
-  const { success, data, error } = await formSchema.safeParse(Object.fromEntries(formData));
-  if (!success) {
-    return { formErrors: error.flatten().fieldErrors };
+  const avatar = formData.get("avatar");
+  if (avatar && avatar instanceof File) {
+    if (avatar.size <= 2097152 && avatar.type.startsWith("image/")) {
+      // 'avatars'는 supabase storage 내부의 버킷 이름
+      const { data, error } = await client.storage.from("avatars").upload(userId, avatar, {
+        contentType: avatar.type,
+        upsert: true, // upsert는 파일이 이미 존재하면 덮어쓰기를 합니다.
+      });
+      if (error) {
+        console.error(error);
+        return { formErrors: { avatar: ["Failed to upload avatar"] } };
+      }
+      // 파일을 업로드 한 뒤 url을 반환
+      const {
+        data: { publicUrl },
+      } = client.storage.from("avatars").getPublicUrl(userId);
+      // url을 해당 사용자의 프로필에 업데이트
+      await updateUserAvatar(client, { id: userId, avatar: publicUrl });
+      return { success: true };
+    } else {
+      return { formErrors: { avatar: ["Invalid file type or size"] } };
+    }
+  } else {
+    const { success, data, error } = formSchema.safeParse(Object.fromEntries(formData));
+    if (!success) {
+      return { formErrors: error.flatten().fieldErrors };
+    }
+    const { name, role, headline, bio } = data;
+    await updateUser(client, {
+      id: userId,
+      name,
+      role: role as "developer" | "designer" | "marketer" | "founder" | "product_manager",
+      headline,
+      bio,
+    });
+    return { success: true };
   }
-  const { name, role, headline, bio } = data;
-  const user = await updateUser(client, {
-    id: userId,
-    name,
-    role: role as "developer" | "designer" | "marketer" | "founder" | "product_manager",
-    headline,
-    bio,
-  });
-  return { success: true };
 };
 
 export const loader = async ({ request }: Route.LoaderArgs) => {
@@ -132,8 +157,14 @@ export default function SettingsPage({ loaderData, actionData }: Route.Component
           </Form>
         </div>
         <aside className="col-span-2">
-          <Form>
+          <Form method="post" encType="multipart/form-data">
             <FilePair name="avatar" label="Avatar" description="Avatar를 업로드하세요." />
+            {actionData?.formErrors?.avatar && (
+              <Alert variant="destructive">
+                <AlertTitle>Error</AlertTitle>
+                <AlertDescription>{actionData.formErrors.avatar.join(", ")}</AlertDescription>
+              </Alert>
+            )}
             <Button type="submit">Update Avatar</Button>
           </Form>
         </aside>
