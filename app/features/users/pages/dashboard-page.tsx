@@ -36,7 +36,6 @@ export const loader = async ({ request }: Route.LoaderArgs) => {
 
 export default function DashboardPage({ loaderData }: Route.ComponentProps) {
   const { chartData } = loaderData;
-  console.log("chartData", chartData);
   return (
     <div className="space-y-20">
       <h1 className="text-2xl font-bold text-foreground">대시보드 페이지</h1>

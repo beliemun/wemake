@@ -3,8 +3,7 @@ import { productListSelect } from "../products/queries";
 import { makeSsrClient, type Database } from "~/supabase-client";
 import type { SupabaseClient } from "@supabase/supabase-js";
 
-export const getUserById = async ({ id, request }: { id: string; request: Request }) => {
-  const { client } = makeSsrClient(request);
+export const getUserById = async (client: SupabaseClient<Database>, { id }: { id: string }) => {
   const { data, error } = await client
     .from("profiles")
     .select(
@@ -12,14 +11,15 @@ export const getUserById = async ({ id, request }: { id: string; request: Reques
         profile_id,
         avatar,
         name,
-        username
+        username,
+        headline,
+        bio,
+        role
     `
     )
     .eq("profile_id", id)
     .single();
   if (error) {
-    // console.log("getUserById error:", error);
-    // throw error;
     return null;
   }
   return data;

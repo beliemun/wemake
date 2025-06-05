@@ -17,7 +17,6 @@ export const meta = ({ data: { idea } }: Route.MetaArgs) => {
 };
 
 export const loader = async ({ params, request }: Route.LoaderArgs) => {
-  console.log("check");
   const { client } = makeSsrClient(request);
   const idea = await getGptIdea(client, { gpt_idea_id: params.ideaId });
 

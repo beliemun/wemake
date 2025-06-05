@@ -1,4 +1,4 @@
-import { Form, Link, NavLink, Outlet } from "react-router";
+import { Form, Link, NavLink, Outlet, useOutletContext } from "react-router";
 import { Avatar, AvatarFallback, AvatarImage } from "~/common/components/ui/avatar";
 import { Badge } from "~/common/components/ui/badge";
 import { Button, buttonVariants } from "~/common/components/ui/button";
@@ -24,7 +24,9 @@ export const loader = async ({ params, request }: Route.LoaderArgs) => {
   return { user };
 };
 
-export default function ProfileLayout({ loaderData }: Route.ComponentProps) {
+export default function ProfileLayout({ loaderData, params }: Route.ComponentProps) {
+  const { isSignedIn, name } = useOutletContext<{ isSignedIn: boolean; name?: string }>();
+
   return (
     <div className="space-y-8">
       <div className="flex flex-row items-center gap-4">
@@ -38,31 +40,37 @@ export default function ProfileLayout({ loaderData }: Route.ComponentProps) {
         <div className="flex flex-col gap-2">
           <div className="flex flex-row gap-2">
             <h1 className="text-2xl font-bold text-foreground">{loaderData.user.name}</h1>
-            <Button variant="default" className="cursor-pointer" asChild>
-              <Link to="/my/settings">Edit Profile</Link>
-            </Button>
-            <Button variant="default" className="cursor-pointer">
-              Follow
-            </Button>
-            <Dialog>
-              <DialogTrigger asChild>
-                <Button variant="outline" className="cursor-pointer">
-                  Send Message
+            {isSignedIn && loaderData.user.username === params.username ? (
+              <Button variant="default" className="cursor-pointer" asChild>
+                <Link to="/my/settings">Edit Profile</Link>
+              </Button>
+            ) : null}
+            {isSignedIn && loaderData.user.username !== params.username ? (
+              <>
+                <Button variant="default" className="cursor-pointer">
+                  Follow
                 </Button>
-              </DialogTrigger>
-              <DialogContent>
-                <DialogHeader>
-                  <DialogTitle>Send Message</DialogTitle>
-                </DialogHeader>
-                <DialogDescription>Send a message to John Doe</DialogDescription>
-                <Form className="space-y-2">
-                  <Textarea placeholder="Message" className="resize-none" rows={4} />
-                </Form>
-                <DialogFooter>
-                  <Button type="submit">Send</Button>
-                </DialogFooter>
-              </DialogContent>
-            </Dialog>
+                <Dialog>
+                  <DialogTrigger asChild>
+                    <Button variant="outline" className="cursor-pointer">
+                      Send Message
+                    </Button>
+                  </DialogTrigger>
+                  <DialogContent>
+                    <DialogHeader>
+                      <DialogTitle>Send Message</DialogTitle>
+                    </DialogHeader>
+                    <DialogDescription>Send a message to John Doe</DialogDescription>
+                    <Form className="space-y-2">
+                      <Textarea placeholder="Message" className="resize-none" rows={4} />
+                    </Form>
+                    <DialogFooter>
+                      <Button type="submit">Send</Button>
+                    </DialogFooter>
+                  </DialogContent>
+                </Dialog>
+              </>
+            ) : null}
           </div>
           <div className="flex flex-row gap-2">
             <span className="text-sm text-muted-foreground">@{loaderData.user.username}</span>

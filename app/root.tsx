@@ -56,7 +56,7 @@ export const loader = async ({ request }: Route.LoaderArgs) => {
     data: { user },
   } = await client.auth.getUser();
   if (user) {
-    const profile = await getUserById({ id: user.id, request });
+    const profile = await getUserById(client, { id: user.id });
     return { user, profile };
   }
   return { user, profile: null };

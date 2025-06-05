@@ -17,7 +17,7 @@ export async function loader({ request }: Route.LoaderArgs) {
     data: { user },
   } = await client.auth.getUser();
   if (user) {
-    const profile = await getUserById({ id: user.id, request });
+    const profile = await getUserById(client, { id: user.id });
     return redirect(`/users/${profile?.username}`);
   }
   return redirect("/auth/sign-in");

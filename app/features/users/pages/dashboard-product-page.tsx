@@ -1,19 +1,12 @@
 import { ChartTooltipContent, type ChartConfig } from "~/common/components/ui/chart";
 import { ChartTooltip } from "~/common/components/ui/chart";
 import { Area, AreaChart, CartesianGrid, Line, XAxis } from "recharts";
-import { LineChart } from "recharts";
 import type { Route } from "./+types/dashboard-product-page";
 import { Card, CardContent, CardHeader, CardTitle } from "~/common/components/ui/card";
 import { ChartContainer } from "~/common/components/ui/chart";
+import { makeSsrClient } from "~/supabase-client";
+import { getSignedInUserId } from "../queries";
 
-const chartData = [
-  { month: "January", views: 186, visitors: 100 },
-  { month: "February", views: 305, visitors: 200 },
-  { month: "March", views: 237, visitors: 300 },
-  { month: "April", views: 73, visitors: 400 },
-  { month: "May", views: 209, visitors: 500 },
-  { month: "June", views: 214, visitors: 600 },
-];
 const chartConfig = {
   views: {
     label: "views",
@@ -33,7 +26,29 @@ export const meta: Route.MetaFunction = () => {
   ];
 };
 
-export default function DashboardProductPage() {
+export const loader = async ({ request, params }: Route.LoaderArgs) => {
+  const { client } = makeSsrClient(request);
+  const userId = await getSignedInUserId(client);
+  const { error } = await client
+    .from("products")
+    .select("product_id")
+    .eq("profile_id", userId)
+    .eq("product_id", Number(params.productId))
+    .single();
+  if (error) {
+    throw error;
+  }
+  const { data, error: rpcError } = await client.rpc("get_product_stats", {
+    product_id: params.productId,
+  });
+  if (rpcError) {
+    throw rpcError;
+  }
+  return { chartData: data };
+};
+
+export default function DashboardProductPage({ loaderData }: Route.ComponentProps) {
+  const { chartData } = loaderData;
   return (
     <div className="space-y-20">
       <h1 className="text-2xl font-bold text-foreground">판매 분석</h1>
@@ -57,11 +72,11 @@ export default function DashboardProductPage() {
                 tickLine={false}
                 axisLine={false}
                 tickMargin={8}
-                tickFormatter={(value) => value.slice(0, 3)}
+                padding={{ left: 15, right: 15 }}
               />
               <ChartTooltip cursor={false} content={<ChartTooltipContent hideLabel />} />
               <Area
-                dataKey="views"
+                dataKey="product_view"
                 type="natural"
                 stroke="var(--color-views)"
                 fill="var(--color-views)"
@@ -70,7 +85,7 @@ export default function DashboardProductPage() {
                 fillOpacity={0.3}
               />
               <Area
-                dataKey="visitors"
+                dataKey="product_visit"
                 type="natural"
                 stroke="var(--color-visitors)"
                 fill="var(--color-visitors)"

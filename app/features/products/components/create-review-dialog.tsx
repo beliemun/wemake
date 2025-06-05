@@ -19,7 +19,6 @@ export function CreateReviewDialog() {
   const [rating, setRating] = useState<number>(0);
   const [hoverRating, setHoverRating] = useState<number>(0);
   const actionData = useActionData<typeof action>();
-  console.log(actionData);
 
   return (
     <DialogContent>
