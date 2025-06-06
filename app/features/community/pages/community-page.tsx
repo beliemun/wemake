@@ -150,6 +150,7 @@ export default function CommunityPage({ loaderData }: Route.ComponentProps) {
                       votesCount={post.upvotes}
                       avatar={post.author_avatar}
                       expanded={true}
+                      isUpvoted={post.is_upvoted}
                     />
                   ))}
                 </div>
