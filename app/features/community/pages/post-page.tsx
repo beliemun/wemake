@@ -20,6 +20,7 @@ import { z } from "zod";
 import { createReply } from "../mutations";
 import { getSignedInUserId } from "~/features/users/queries";
 import { useEffect, useRef } from "react";
+import { cn } from "~/lib/utils";
 
 export const meta: Route.MetaFunction = () => [
   { title: "게시글 | WeMake" },
@@ -72,6 +73,8 @@ export default function PostPage({ loaderData, actionData }: Route.ComponentProp
     }
   }, [actionData, formRef]);
 
+  console.log("loaderData", loaderData);
+
   return (
     <main className="flex flex-col gap-10">
       <Breadcrumb>
@@ -101,8 +104,13 @@ export default function PostPage({ loaderData, actionData }: Route.ComponentProp
         <div className="flex flex-col col-span-4 gap-4">
           <div className="flex w-full items-start gap-10">
             <Button
-              variant="outline"
-              className="flex flex-col items-center justify-center cursor-pointer h-14"
+              variant="default"
+              className={cn(
+                "flex flex-col items-center justify-center cursor-pointer h-14",
+                loaderData.post.is_upvoted
+                  ? "bg-primary text-primary-foreground pointer-events-none"
+                  : "bg-transparent text-foreground cursor-pointer"
+              )}
             >
               <ChevronUp className="w-4 h-4 text-foreground" />
               <span className="text-sm text-foreground">{loaderData.post.upvotes}</span>

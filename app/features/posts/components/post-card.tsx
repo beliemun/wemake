@@ -29,7 +29,6 @@ export function PostCard({
   avatar,
   isUpvoted,
 }: PostCardProps) {
-  console.log("isUpvoted", isUpvoted);
   return (
     <Link to={`/community/${postId}`}>
       <Card>
