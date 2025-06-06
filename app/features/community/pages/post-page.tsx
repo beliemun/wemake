@@ -1,4 +1,4 @@
-import { Form, Link, redirect, useOutletContext } from "react-router";
+import { Form, Link, redirect, useFetcher, useOutletContext } from "react-router";
 import type { Route } from "./+types/post-page";
 import {
   Breadcrumb,
@@ -58,6 +58,8 @@ export const action = async ({ request, params }: Route.ActionArgs) => {
 };
 
 export default function PostPage({ loaderData, actionData }: Route.ComponentProps) {
+  const fetcher = useFetcher();
+
   const { isSignedIn, name, username, avatar } = useOutletContext<{
     isSignedIn: boolean;
     name?: string;
@@ -72,8 +74,6 @@ export default function PostPage({ loaderData, actionData }: Route.ComponentProp
       formRef.current?.scrollIntoView({ behavior: "smooth" });
     }
   }, [actionData, formRef]);
-
-  console.log("loaderData", loaderData);
 
   return (
     <main className="flex flex-col gap-10">
@@ -103,18 +103,21 @@ export default function PostPage({ loaderData, actionData }: Route.ComponentProp
       <div className="grid grid-cols-6 gap-10 items-start">
         <div className="flex flex-col col-span-4 gap-4">
           <div className="flex w-full items-start gap-10">
-            <Button
-              variant="default"
-              className={cn(
-                "flex flex-col items-center justify-center cursor-pointer h-14",
-                loaderData.post.is_upvoted
-                  ? "bg-primary text-primary-foreground pointer-events-none"
-                  : "bg-transparent text-foreground cursor-pointer"
-              )}
-            >
-              <ChevronUp className="w-4 h-4 text-foreground" />
-              <span className="text-sm text-foreground">{loaderData.post.upvotes}</span>
-            </Button>
+            <fetcher.Form method="post" action={`/community/${loaderData.post.post_id}/upvote`}>
+              <input type="hidden" name="postId" value={loaderData.post.post_id} />
+              <Button
+                variant="default"
+                className={cn(
+                  "flex flex-col items-center justify-center cursor-pointer h-14",
+                  loaderData.post.is_upvoted
+                    ? "bg-primary text-primary-foreground pointer-events-none"
+                    : "bg-transparent text-foreground cursor-pointer"
+                )}
+              >
+                <ChevronUp className="w-4 h-4 text-foreground" />
+                <span className="text-sm text-foreground">{loaderData.post.upvotes}</span>
+              </Button>
+            </fetcher.Form>
             <div className="flex flex-col gap-6">
               <h2 className="text-2xl font-bold text-foreground">{loaderData.post.title}</h2>
               <div>
