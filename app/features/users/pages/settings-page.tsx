@@ -35,10 +35,12 @@ export const action = async ({ request }: Route.ActionArgs) => {
   if (avatar && avatar instanceof File) {
     if (avatar.size <= 2097152 && avatar.type.startsWith("image/")) {
       // 'avatars'는 supabase storage 내부의 버킷 이름
-      const { data, error } = await client.storage.from("avatars").upload(userId, avatar, {
-        contentType: avatar.type,
-        upsert: true, // upsert는 파일이 이미 존재하면 덮어쓰기를 합니다.
-      });
+      const { data, error } = await client.storage
+        .from("avatars")
+        .upload(`${userId}/${Date.now()}`, avatar, {
+          contentType: avatar.type,
+          upsert: false, // upsert가 true면 파일이 이미 존재하면 덮어쓰기를 합니다.
+        });
       if (error) {
         console.error(error);
         return { formErrors: { avatar: ["Failed to upload avatar"] } };
@@ -46,7 +48,7 @@ export const action = async ({ request }: Route.ActionArgs) => {
       // 파일을 업로드 한 뒤 url을 반환
       const {
         data: { publicUrl },
-      } = client.storage.from("avatars").getPublicUrl(userId);
+      } = client.storage.from("avatars").getPublicUrl(data.path);
       // url을 해당 사용자의 프로필에 업데이트
       await updateUserAvatar(client, { id: userId, avatar: publicUrl });
       return { success: true };
