@@ -60,3 +60,20 @@ export const createReply = async (
   }
   return data;
 };
+
+export const toggleUpvote = async (
+  client: SupabaseClient<Database>,
+  { postId, userId }: { postId: number; userId: string }
+) => {
+  await new Promise((resolve) => setTimeout(resolve, 1000));
+  const { count } = await client
+    .from("post_upvotes")
+    .select("count", { count: "exact", head: true }) // head: true 옵션을 사용하면 데이터 없이 count만 전달 받음
+    .eq("post_id", postId)
+    .eq("profile_id", userId);
+  if (count === 0) {
+    await client.from("post_upvotes").insert({ post_id: postId, profile_id: userId });
+  } else {
+    await client.from("post_upvotes").delete().eq("post_id", postId).eq("profile_id", userId);
+  }
+};
