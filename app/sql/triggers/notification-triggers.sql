@@ -29,8 +29,8 @@ BEGIN
     SELECT profile_id INTO product_owner FROM public.products WHERE product_id = NEW.product_id; -- 여기서 NEW는 새로생성(insert)된 데이터를 의미한다.
     -- 1. 새로 생긴 review의 product_id와 같은 product_id를 가진 product를 products 테이블에서 찾는다.
     -- 2. 그리고 그 데이터 중에 profile_id를 찾아서 product_owner 변수에 저장한다.
-    INSERT INTO public.notifications (type, source_id, target_id)
-    VALUES ('review', NEW.profile_id, product_owner);
+    INSERT INTO public.notifications (type, source_id, target_id, product_id)
+    VALUES ('review', NEW.profile_id, product_owner, NEW.product_id);
     RETURN NEW;
 END;
 $$;
@@ -50,8 +50,8 @@ DECLARE
     post_owner uuid;
 BEGIN
     SELECT profile_id INTO post_owner FROM public.posts WHERE post_id = NEW.post_id;
-    INSERT INTO public.notifications (type, source_id, target_id)
-    VALUES ('reply', NEW.profile_id, post_owner);
+    INSERT INTO public.notifications (type, source_id, target_id, post_id)
+    VALUES ('reply', NEW.profile_id, post_owner, NEW.post_id);
     RETURN NEW;
 END;
 $$;

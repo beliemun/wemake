@@ -57,18 +57,18 @@ export type Database = {
       follows: {
         Row: {
           created_at: string
-          follower_id: string | null
-          following_id: string | null
+          follower_id: string
+          following_id: string
         }
         Insert: {
           created_at?: string
-          follower_id?: string | null
-          following_id?: string | null
+          follower_id: string
+          following_id: string
         }
         Update: {
           created_at?: string
-          follower_id?: string | null
-          following_id?: string | null
+          follower_id?: string
+          following_id?: string
         }
         Relationships: [
           {
@@ -308,8 +308,9 @@ export type Database = {
           notification_id: number
           post_id: number | null
           product_id: number | null
-          source_user_id: string | null
-          target_user_id: string | null
+          seen: boolean
+          source_id: string | null
+          target_id: string | null
           type: Database["public"]["Enums"]["notification_type"]
         }
         Insert: {
@@ -317,8 +318,9 @@ export type Database = {
           notification_id?: number
           post_id?: number | null
           product_id?: number | null
-          source_user_id?: string | null
-          target_user_id?: string | null
+          seen?: boolean
+          source_id?: string | null
+          target_id?: string | null
           type: Database["public"]["Enums"]["notification_type"]
         }
         Update: {
@@ -326,8 +328,9 @@ export type Database = {
           notification_id?: number
           post_id?: number | null
           product_id?: number | null
-          source_user_id?: string | null
-          target_user_id?: string | null
+          seen?: boolean
+          source_id?: string | null
+          target_id?: string | null
           type?: Database["public"]["Enums"]["notification_type"]
         }
         Relationships: [
@@ -367,15 +370,15 @@ export type Database = {
             referencedColumns: ["product_id"]
           },
           {
-            foreignKeyName: "notifications_source_user_id_profiles_profile_id_fk"
-            columns: ["source_user_id"]
+            foreignKeyName: "notifications_source_id_profiles_profile_id_fk"
+            columns: ["source_id"]
             isOneToOne: false
             referencedRelation: "profiles"
             referencedColumns: ["profile_id"]
           },
           {
-            foreignKeyName: "notifications_target_user_id_profiles_profile_id_fk"
-            columns: ["target_user_id"]
+            foreignKeyName: "notifications_target_id_profiles_profile_id_fk"
+            columns: ["target_id"]
             isOneToOne: false
             referencedRelation: "profiles"
             referencedColumns: ["profile_id"]

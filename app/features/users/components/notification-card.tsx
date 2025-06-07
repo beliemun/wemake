@@ -3,22 +3,27 @@ import { Avatar, AvatarFallback, AvatarImage } from "~/common/components/ui/avat
 import { Button } from "~/common/components/ui/button";
 import { EyeIcon } from "lucide-react";
 import { cn } from "~/lib/utils";
+import { DateTime } from "luxon";
 interface NotificationCardProps {
   avatarUrl: string;
   avatarFallback: string;
   username: string;
-  action: string;
   timeAgo: string;
   seen: boolean;
+  type: string;
+  productName: string;
+  postTitle: string;
 }
 
 export function NotificationCard({
   avatarUrl,
   avatarFallback,
   username,
-  action,
   timeAgo,
   seen,
+  type,
+  productName,
+  postTitle,
 }: NotificationCardProps) {
   return (
     <Card className={cn("flex flex-col gap-4", { "bg-muted": !seen })}>
@@ -29,10 +34,20 @@ export function NotificationCard({
         </Avatar>
         <div className="flex flex-col gap-1">
           <CardTitle className="flex gap-1 font-bold">
-            <span>{username}</span>
-            <span>{action}</span>
+            <span className="cursor-pointer hover:underline">{username}</span>
+            <span className="text-muted-foreground">
+              {type === "follow"
+                ? "followed you"
+                : type === "review"
+                ? `reviewed your product "${productName}"`
+                : type === "reply"
+                ? `replied to your post "${postTitle}"`
+                : "mentioned you"}
+            </span>
           </CardTitle>
-          <small className="text-muted-foreground text-sm">{timeAgo}</small>
+          <small className="text-muted-foreground text-sm">
+            {DateTime.fromISO(timeAgo).toRelative()}
+          </small>
         </div>
       </CardHeader>
       <CardContent className="flex justify-end">
