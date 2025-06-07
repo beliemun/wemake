@@ -1,8 +1,7 @@
 import type { Route } from "./+types/notifications-page";
 import { NotificationCard } from "../components/notification-card";
 import { makeSsrClient } from "~/supabase-client";
-import { getSignedInUserId } from "../queries";
-import { getNotifications } from "../mutations";
+import { getSignedInUserId, getNotifications } from "../queries";
 
 export const meta: Route.MetaFunction = () => {
   return [
@@ -20,7 +19,6 @@ export const loader = async ({ request }: Route.LoaderArgs) => {
 };
 
 export default function NotificationsPage({ loaderData }: Route.ComponentProps) {
-  console.log(loaderData);
   return (
     <div className="space-y-6">
       <h1 className="text-2xl font-bold">알림</h1>
@@ -28,6 +26,7 @@ export default function NotificationsPage({ loaderData }: Route.ComponentProps) 
         {loaderData.notifications.map((notification) => (
           <NotificationCard
             key={notification.notification_id}
+            notificationId={notification.notification_id}
             avatarUrl={notification.profile?.avatar ?? ""}
             avatarFallback={notification.profile?.name ?? ""}
             username={notification.profile?.name ?? ""}

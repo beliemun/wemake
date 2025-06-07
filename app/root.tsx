@@ -15,7 +15,7 @@ import Navigation from "./common/components/navigation";
 import { Settings } from "luxon";
 import { cn } from "./lib/utils";
 import { makeSsrClient } from "./supabase-client";
-import { getUserById } from "./features/users/queries";
+import { countNotifications, getUserById } from "./features/users/queries";
 
 export const links: Route.LinksFunction = () => [
   { rel: "preconnect", href: "https://fonts.googleapis.com" },
@@ -57,16 +57,17 @@ export const loader = async ({ request }: Route.LoaderArgs) => {
   } = await client.auth.getUser();
   if (user) {
     const profile = await getUserById(client, { id: user.id });
-    return { user, profile };
+    const notificationCount = await countNotifications(client, { userId: user.id });
+    return { user, profile, notificationCount };
   }
-  return { user, profile: null };
+  return { user, profile: null, notificationCount: 0 };
 };
 
 export default function App({ loaderData }: Route.ComponentProps) {
   const { pathname } = useLocation();
   const navigation = useNavigation();
   const isLoading = navigation.state === "loading";
-  const { user, profile } = loaderData;
+  const { user, profile, notificationCount } = loaderData;
   const isSignedIn = !!user;
 
   return (
@@ -80,7 +81,7 @@ export default function App({ loaderData }: Route.ComponentProps) {
         {pathname.includes("/auth") ? null : (
           <Navigation
             isSignedIn={!!user}
-            hasNotifications={true}
+            hasNotifications={notificationCount > 0}
             hasMessages={true}
             name={profile?.name ?? ""}
             username={profile?.username ?? ""}

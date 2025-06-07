@@ -80,6 +80,7 @@ export default [
       ]),
     ]),
     route("/notifications", "features/users/pages/notifications-page.tsx"),
+    route("/notifications/:notificationId/seen", "features/users/pages/notification-seen-page.tsx"),
     route("/profile", "features/users/pages/my-profile-page.tsx"),
     route("/settings", "features/users/pages/settings-page.tsx"),
   ]),

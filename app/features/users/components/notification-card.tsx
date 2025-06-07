@@ -4,7 +4,9 @@ import { Button } from "~/common/components/ui/button";
 import { EyeIcon } from "lucide-react";
 import { cn } from "~/lib/utils";
 import { DateTime } from "luxon";
+import { useFetcher, useParams } from "react-router";
 interface NotificationCardProps {
+  notificationId: number;
   avatarUrl: string;
   avatarFallback: string;
   username: string;
@@ -16,6 +18,7 @@ interface NotificationCardProps {
 }
 
 export function NotificationCard({
+  notificationId,
   avatarUrl,
   avatarFallback,
   username,
@@ -25,8 +28,10 @@ export function NotificationCard({
   productName,
   postTitle,
 }: NotificationCardProps) {
+  const fetcher = useFetcher();
+  const optimisticSeen = fetcher.state === "idle" ? seen : true;
   return (
-    <Card className={cn("flex flex-col gap-4", { "bg-muted": !seen })}>
+    <Card className={cn("flex flex-col gap-4", { "bg-muted": !optimisticSeen })}>
       <CardHeader className="flex flex-row gap-4">
         <Avatar className="w-10 h-10">
           <AvatarImage src={avatarUrl} />
@@ -51,9 +56,16 @@ export function NotificationCard({
         </div>
       </CardHeader>
       <CardContent className="flex justify-end">
-        <Button className="cursor-pointer" variant="outline" size="icon">
-          <EyeIcon className="w-4 h-4" />
-        </Button>
+        <fetcher.Form method="post" action={`/my/notifications/${notificationId}/seen`}>
+          <Button
+            className="cursor-pointer"
+            variant="outline"
+            size="icon"
+            disabled={optimisticSeen}
+          >
+            <EyeIcon className="w-4 h-4" />
+          </Button>
+        </fetcher.Form>
       </CardContent>
     </Card>
   );

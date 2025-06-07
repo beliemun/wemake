@@ -36,36 +36,18 @@ export const updateUserAvatar = async (
   }
 };
 
-export const getNotifications = async (
+export const seeNotification = async (
   client: SupabaseClient<Database>,
-  { userId }: { userId: string }
+  { notificationId, userId }: { notificationId: number; userId: string }
 ) => {
-  const { data, error } = await client
+  console.log("notificationId", notificationId);
+  console.log("userId", userId);
+  const { error } = await client
     .from("notifications")
-    .select(
-      `
-      notification_id,
-      profile:profiles!source_id(
-        profile_id,
-        avatar,
-        name
-      ),
-      product:products!product_id(
-        product_id,
-        name
-      ),
-      post:posts!post_id(
-        post_id,
-        title
-      ),
-      type,
-      seen,
-      created_at`
-    )
-    .eq("target_id", userId)
-    .order("created_at", { ascending: false });
+    .update({ seen: true })
+    .eq("notification_id", notificationId)
+    .eq("target_id", userId);
   if (error) {
     throw error;
   }
-  return data;
 };
