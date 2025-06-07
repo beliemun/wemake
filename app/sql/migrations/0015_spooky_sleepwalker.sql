@@ -1,0 +1,2 @@
+ALTER TABLE "follows" ADD CONSTRAINT "follows_follower_id_following_id_pk" PRIMARY KEY("follower_id","following_id");--> statement-breakpoint
+ALTER TABLE "follows" ADD CONSTRAINT "no_self_follow" CHECK ("follows"."follower_id" != "follows"."following_id");
