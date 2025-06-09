@@ -91,17 +91,15 @@ export default function TeamPage({ loaderData }: Route.ComponentProps) {
                 </Badge>
               </div>
             </div>
-            <Form className="flex flex-col gap-6">
+            <Form
+              className="flex flex-col gap-6"
+              method="post"
+              action={`/users/${loaderData.team.team_leader.username}/messages`}
+            >
               <InputPair
                 label="Introduce"
-                name="introduce"
+                name="content"
                 description="Introduce yourself"
-                textArea
-              />
-              <InputPair
-                label="Why do you want to join?"
-                name="why"
-                description="Why do you want to join?"
                 textArea
               />
               <Button type="submit" className="w-ful cursor-pointer">

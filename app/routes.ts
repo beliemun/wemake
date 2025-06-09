@@ -84,13 +84,12 @@ export default [
     route("/profile", "features/users/pages/my-profile-page.tsx"),
     route("/settings", "features/users/pages/settings-page.tsx"),
   ]),
-  ...prefix("/users", [
+  ...prefix("/users/:username", [
     layout("features/users/layouts/profile-layout.tsx", [
-      ...prefix("/:username", [
-        index("features/users/pages/profile-page.tsx"),
-        route("/products", "features/users/pages/profile-products-page.tsx"),
-        route("/posts", "features/users/pages/profile-posts-page.tsx"),
-      ]),
+      index("features/users/pages/profile-page.tsx"),
+      route("/products", "features/users/pages/profile-products-page.tsx"),
+      route("/posts", "features/users/pages/profile-posts-page.tsx"),
     ]),
+    route("/messages", "features/users/pages/send-messages-page.tsx"),
   ]),
 ] satisfies RouteConfig;

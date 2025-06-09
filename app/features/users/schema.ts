@@ -99,12 +99,11 @@ export const messageRooms = pgTable("message_rooms", {
 export const messageRoomMembers = pgTable(
   "message_room_members",
   {
-    message_room_id: bigint("message_room_id", { mode: "number" }).references(
-      () => messageRooms.message_room_id,
-      {
+    message_room_id: bigint("message_room_id", { mode: "number" })
+      .references(() => messageRooms.message_room_id, {
         onDelete: "cascade",
-      }
-    ),
+      })
+      .notNull(),
     profile_id: uuid().references(() => profiles.profile_id, { onDelete: "cascade" }),
     created_at: timestamp().notNull().defaultNow(),
   },

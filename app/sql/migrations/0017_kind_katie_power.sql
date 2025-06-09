@@ -1,0 +1,1 @@
+ALTER TABLE "message_room_members" ALTER COLUMN "message_room_id" SET NOT NULL;
