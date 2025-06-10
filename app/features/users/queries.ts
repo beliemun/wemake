@@ -160,3 +160,52 @@ export const countNotifications = async (
   }
   return count ?? 0;
 };
+
+export const getRoomMembers = async (
+  client: SupabaseClient<Database>,
+  { userId }: { userId: string }
+) => {
+  const { data, error } = await client
+    .from("messages_view")
+    .select("*")
+    .eq("to_profile_id", userId)
+    .neq("from_profile_id", userId);
+  if (error) {
+    throw error;
+  }
+  return data;
+};
+
+export const getMessages = async (
+  client: SupabaseClient<Database>,
+  { messageRoomId, userId }: { messageRoomId: string; userId: string }
+) => {
+  const { count, error: countError } = await client
+    .from("message_room_members")
+    .select("*", { count: "exact", head: true })
+    .eq("message_room_id", Number(messageRoomId))
+    .eq("profile_id", userId);
+  if (countError) {
+    throw countError;
+  }
+  if (count === 0) {
+    throw new Error("Message room not found");
+  }
+  const { data, error } = await client
+    .from("messages")
+    // sender는 null이 될 수 없으니까 inner join 해야 함.
+    // 이렇게 처리하면 data에 마우스를 올려보면 sender가 null이 될 수 없음.
+    .select(
+      `*, sender:profiles!sender_id!inner( 
+        name,
+        avatar
+      ),
+      created_at`
+    )
+    .eq("message_room_id", Number(messageRoomId))
+    .order("created_at", { ascending: true });
+  if (error) {
+    throw error;
+  }
+  return data;
+};
