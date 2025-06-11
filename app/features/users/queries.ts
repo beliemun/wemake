@@ -168,8 +168,8 @@ export const getRoomMembers = async (
   const { data, error } = await client
     .from("messages_view")
     .select("*")
-    .eq("to_profile_id", userId)
-    .neq("from_profile_id", userId);
+    .eq("from_profile_id", userId)
+    .neq("to_profile_id", userId);
   if (error) {
     throw error;
   }
@@ -195,15 +195,44 @@ export const getMessages = async (
     .from("messages")
     // sender는 null이 될 수 없으니까 inner join 해야 함.
     // 이렇게 처리하면 data에 마우스를 올려보면 sender가 null이 될 수 없음.
-    .select(
-      `*, sender:profiles!sender_id!inner( 
-        name,
-        avatar
-      ),
-      created_at`
-    )
+    .select(`*`)
     .eq("message_room_id", Number(messageRoomId))
     .order("created_at", { ascending: true });
+  if (error) {
+    throw error;
+  }
+  return data;
+};
+
+export const getParticipant = async (
+  client: SupabaseClient<Database>,
+  { messageRoomId, userId }: { messageRoomId: string; userId: string }
+) => {
+  const { count, error: errorCount } = await client
+    .from("message_room_members")
+    .select("*", { count: "exact", head: true })
+    .eq("message_room_id", Number(messageRoomId))
+    .eq("profile_id", userId);
+  if (errorCount) {
+    throw errorCount;
+  }
+  if (count === 0) {
+    throw new Error("Message room not found");
+  }
+  const { data, error } = await client
+    .from("message_room_members")
+    .select(
+      `
+      profile:profiles!profile_id!inner(
+        profile_id,
+        avatar,
+        name
+      )
+      `
+    )
+    .eq("message_room_id", Number(messageRoomId))
+    .neq("profile_id", userId)
+    .single();
   if (error) {
     throw error;
   }

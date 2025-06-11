@@ -1,5 +1,5 @@
 import type { SupabaseClient } from "@supabase/supabase-js";
-import { makeSsrClient, type Database } from "~/supabase-client";
+import { type Database } from "~/supabase-client";
 
 export const updateUser = async (
   client: SupabaseClient<Database>,
@@ -40,8 +40,6 @@ export const seeNotification = async (
   client: SupabaseClient<Database>,
   { notificationId, userId }: { notificationId: number; userId: string }
 ) => {
-  console.log("notificationId", notificationId);
-  console.log("userId", userId);
   const { error } = await client
     .from("notifications")
     .update({ seen: true })
@@ -72,7 +70,6 @@ export const sendMessage = async (
       sender_id: fromUserId,
       content,
     });
-    console.log(22, data.message_room_id);
     return data.message_room_id;
   } else {
     // 새로운 메시지 방 생성
@@ -101,5 +98,31 @@ export const sendMessage = async (
     });
     console.log(22, roomData.message_room_id);
     return roomData.message_room_id;
+  }
+};
+
+export const sendMessageToRoom = async (
+  client: SupabaseClient<Database>,
+  { senderId, content, messageRoomId }: { senderId: string; content: string; messageRoomId: string }
+) => {
+  // 유저가 메시지 방에 속해있는지 확인
+  const { count, error: countError } = await client
+    .from("message_room_members")
+    .select("*", { count: "exact", head: true })
+    .eq("message_room_id", Number(messageRoomId))
+    .eq("profile_id", senderId);
+  if (countError) {
+    throw countError;
+  }
+  if (count === 0) {
+    throw new Error("You are not a member of this message room");
+  }
+  const { error } = await client.from("messages").insert({
+    message_room_id: Number(messageRoomId),
+    sender_id: senderId,
+    content,
+  });
+  if (error) {
+    throw error;
   }
 };
