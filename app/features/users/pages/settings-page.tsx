@@ -24,7 +24,7 @@ const formSchema = z.object({
   role: z.string().min(1),
   headline: z.string().min(1),
   bio: z.string().min(1),
-  avatar: z.instanceof(File),
+  avatar: z.instanceof(File).optional(),
 });
 
 export const action = async ({ request }: Route.ActionArgs) => {
