@@ -80,6 +80,8 @@ export default function MessagePage({ loaderData, actionData }: Route.ComponentP
           table: "messages",
         },
         (payload) => {
+          // Realtime 중에는 join을 할 수 없다.
+          // 실시간성의 제약으로 인해 데이터를 결합할 수 없기 때문이다.
           setMessages((prev) => [
             ...prev,
             payload.new as Database["public"]["Tables"]["messages"]["Row"],
